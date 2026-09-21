@@ -6,8 +6,8 @@ Contenido, jerarquía, navegación y sistema de diseño, en ese orden, aplicados
 caso mobile del proyecto final: una app de hospital con tres lectores del mismo
 turno — enfermero, paciente y familia.
 
-**Demo:** por publicar
-**Repositorio:** por publicar
+**Demo:** https://4tarea.vercel.app
+**Repositorio:** https://github.com/nik129linux/taller-arquitectura-enfermeria
 
 También abre local: `index.html` directo, no hay build ni instalación.
 
