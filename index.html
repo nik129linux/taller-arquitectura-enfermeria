@@ -31,19 +31,20 @@
 </head>
 <body>
 
-  <!-- Barra de navegación fija superior con vínculos de anclaje -->
+  <!-- Barra de navegación fija superior. Los links son triggers del router
+       (data-view), no anchors de scroll: cada uno abre su vista completa. -->
   <header class="doc-header-nav">
     <div class="doc-nav-container">
-      <a href="#hero" class="doc-brand">
+      <a href="#dashboard" class="doc-brand" data-view="dashboard">
         <span>Stryds</span>
         <span class="doc-brand-accent">/ Clínico</span>
       </a>
       <nav aria-label="Navegación del documento">
         <ul class="doc-nav-list">
-          <li><a href="#section-content" class="doc-nav-link">1. Contenido</a></li>
-          <li><a href="#section-hierarchy" class="doc-nav-link">2. Jerarquía</a></li>
-          <li><a href="#section-navigation" class="doc-nav-link">3. Navegación</a></li>
-          <li><a href="#section-design-system" class="doc-nav-link">4. Sistema de diseño</a></li>
+          <li><a href="#section-content" class="doc-nav-link" data-view="section-content">1. Contenido</a></li>
+          <li><a href="#section-hierarchy" class="doc-nav-link" data-view="section-hierarchy">2. Jerarquía</a></li>
+          <li><a href="#section-navigation" class="doc-nav-link" data-view="section-navigation">3. Navegación</a></li>
+          <li><a href="#section-design-system" class="doc-nav-link" data-view="section-design-system">4. Sistema de diseño</a></li>
         </ul>
       </nav>
       <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar a modo claro" aria-pressed="false">
@@ -56,18 +57,29 @@
 
   <main class="doc-main">
 
-    <!-- Encabezado de presentación del caso de estudio -->
-    <header id="hero" class="doc-hero">
-      <p class="doc-hero-tagline">Taller Universitario de Diseño de Interfaces · Caso Mobile</p>
-      <h1 class="doc-hero-title">Arquitectura de Información para una App de Enfermería Hospitalaria</h1>
-      <p class="doc-hero-lead">
-        Una interfaz móvil con tres lectores diferenciados: el personal de enfermería, el paciente y su familia.
-        Diseñada bajo el sistema visual Stryds con alto contraste y optimización para lectura en camas hospitalarias.
-      </p>
-    </header>
+    <!-- ==================== DASHBOARD (vista inicial) ==================== -->
+    <!-- Las 4 tiles se generan en runtime clonando el innerHTML real de cada
+         .view (ver renderDashboardTiles en app.js): no son íconos ni resúmenes
+         inventados, es el contenido real de la sección en miniatura. -->
+    <section id="dashboard" class="view is-dashboard is-active">
+      <header class="doc-hero">
+        <p class="doc-hero-tagline">Taller Universitario de Diseño de Interfaces · Caso Mobile</p>
+        <h1 class="doc-hero-title">Arquitectura de Información para una App de Enfermería Hospitalaria</h1>
+        <p class="doc-hero-lead">
+          Una interfaz móvil con tres lectores diferenciados: el personal de enfermería, el paciente y su familia.
+          Diseñada bajo el sistema visual Stryds con alto contraste y optimización para lectura en camas hospitalarias.
+          Elegí una sección para entrar en detalle.
+        </p>
+      </header>
+
+      <div id="dashboardGrid" class="dashboard-grid">
+        <!-- Renderizado dinámico vía app.js: una tile clonada por cada .view -->
+      </div>
+    </section>
 
     <!-- ==================== SECCIÓN 1: CONTENIDO ==================== -->
-    <section id="section-content" class="doc-section">
+    <section id="section-content" class="view" data-title="Contenido" data-index="01">
+      <button type="button" class="back-to-dashboard" data-view="dashboard">← Dashboard</button>
       <h2 class="section-heading" data-index="01">Contenido</h2>
 
       <article class="doc-card">
@@ -210,7 +222,8 @@
     </section>
 
     <!-- ==================== SECCIÓN 2: JERARQUÍA ==================== -->
-    <section id="section-hierarchy" class="doc-section">
+    <section id="section-hierarchy" class="view" data-title="Jerarquía" data-index="02">
+      <button type="button" class="back-to-dashboard" data-view="dashboard">← Dashboard</button>
       <h2 class="section-heading" data-index="02">Jerarquía</h2>
 
       <div class="doc-card">
@@ -293,7 +306,8 @@
     </section>
 
     <!-- ==================== SECCIÓN 3: NAVEGACIÓN ==================== -->
-    <section id="section-navigation" class="doc-section">
+    <section id="section-navigation" class="view" data-title="Navegación" data-index="03">
+      <button type="button" class="back-to-dashboard" data-view="dashboard">← Dashboard</button>
       <h2 class="section-heading" data-index="03">Navegación</h2>
 
       <div class="role-preview-card">
@@ -405,7 +419,8 @@
     </section>
 
     <!-- ==================== SECCIÓN 4: SISTEMA DE DISEÑO ==================== -->
-    <section id="section-design-system" class="doc-section">
+    <section id="section-design-system" class="view" data-title="Sistema de diseño" data-index="04">
+      <button type="button" class="back-to-dashboard" data-view="dashboard">← Dashboard</button>
       <h2 class="section-heading" data-index="04">Sistema de diseño</h2>
 
       <!-- a) Design tokens -->
@@ -562,6 +577,148 @@
           Abrir prototipo móvil
           <span aria-hidden="true">→</span>
         </a>
+      </div>
+
+      <!-- g) Pantallas — el nivel más alto de Atomic Design, después de
+           organismos y templates. Ocho pantallas con datos reales del caso
+           (no bloques genéricos): Dashboard y Product Page recrean, en
+           estático, las mismas vistas que ya son interactivas en mockup/. -->
+      <h3 class="subsection-heading">Pantallas</h3>
+      <p class="doc-text-muted">
+        Ocho pantallas de la cara del enfermero, con los mismos pacientes y datos
+        que el resto del documento. Vista previa estática — la interacción real
+        vive en el prototipo de arriba.
+      </p>
+      <div class="phone-mini-grid">
+
+        <!-- 1. Splash -->
+        <figure class="phone-mini">
+          <div class="phone-mini-screen phone-mini-splash">
+            <div class="phone-mini-logo" aria-hidden="true">✚</div>
+            <p class="phone-mini-splash-text">Cargando tu turno…</p>
+            <div class="phone-mini-spinner" aria-hidden="true"></div>
+          </div>
+          <figcaption class="phone-mini-caption">Splash</figcaption>
+        </figure>
+
+        <!-- 2. Image Based -->
+        <figure class="phone-mini">
+          <div class="phone-mini-screen phone-mini-hero">
+            <div class="phone-mini-hero-banner">
+              <span class="label-caption" style="color: var(--color-primary-ink);">Hospital Central · Piso 3</span>
+              <p class="phone-mini-hero-title">Buen turno,<br>Enfermero</p>
+            </div>
+            <div class="phone-mini-quick-grid">
+              <div class="phone-mini-quick-tile"><span>📋</span>Turno</div>
+              <div class="phone-mini-quick-tile"><span>➕</span>Registrar</div>
+              <div class="phone-mini-quick-tile"><span>⏳</span>Pendientes</div>
+              <div class="phone-mini-quick-tile"><span>💬</span>Mensajes</div>
+            </div>
+          </div>
+          <figcaption class="phone-mini-caption">Image Based</figcaption>
+        </figure>
+
+        <!-- 3. Dashboard — recrea renderHomeEnfermero() de mockup/js/mockup.js -->
+        <figure class="phone-mini">
+          <div class="phone-mini-screen">
+            <p class="label-caption-strong" style="margin-bottom: var(--space-app-8);">Pacientes asignados (3)</p>
+            <div class="phone-mini-list">
+              <div class="phone-mini-row">
+                <div class="avatar avatar-sm">CR</div>
+                <div class="phone-mini-row-text">
+                  <span class="phone-mini-row-name">Carlos Rodríguez</span>
+                  <span class="label-caption">Hab. 304-A</span>
+                </div>
+                <span class="badge-critical">PA 90/55</span>
+              </div>
+              <div class="phone-mini-row">
+                <div class="avatar avatar-sm">MG</div>
+                <div class="phone-mini-row-text">
+                  <span class="phone-mini-row-name">María González</span>
+                  <span class="label-caption">Hab. 304-B</span>
+                </div>
+                <span class="badge-pending">11:00</span>
+              </div>
+              <div class="phone-mini-row">
+                <div class="avatar avatar-sm">JP</div>
+                <div class="phone-mini-row-text">
+                  <span class="phone-mini-row-name">Jorge Pérez</span>
+                  <span class="label-caption">Hab. 305-A</span>
+                </div>
+                <span class="label-caption">1 toque</span>
+              </div>
+            </div>
+          </div>
+          <figcaption class="phone-mini-caption">Dashboard</figcaption>
+        </figure>
+
+        <!-- 4. Analytics — signos vitales de Carlos Rodríguez, el caso crítico -->
+        <figure class="phone-mini">
+          <div class="phone-mini-screen">
+            <p class="label-caption-strong" style="margin-bottom: var(--space-app-8);">Carlos Rodríguez · Hab. 304-A</p>
+            <div class="phone-mini-vitals-ring" aria-hidden="true"></div>
+            <p class="phone-mini-vitals-value">PA 90/55</p>
+            <div class="phone-mini-vitals-row">
+              <span class="badge-critical">Taquicardia 112</span>
+            </div>
+            <p class="phone-mini-blurred">Alerta protocolo hipotensión</p>
+            <span class="label-caption">tocá para revelar</span>
+          </div>
+          <figcaption class="phone-mini-caption">Analytics</figcaption>
+        </figure>
+
+        <!-- 5. List — pendientes del turno -->
+        <figure class="phone-mini">
+          <div class="phone-mini-screen">
+            <p class="label-caption-strong" style="margin-bottom: var(--space-app-8);">Pendientes del turno</p>
+            <ul class="phone-mini-checklist">
+              <li><span class="phone-mini-check is-done">✓</span>Medicación 09:30 · María G.</li>
+              <li><span class="phone-mini-check"></span>Cambio postural 11:20 · Jorge P.</li>
+              <li><span class="phone-mini-check"></span>Ronda 13:00 · control de signos</li>
+              <li><span class="phone-mini-check is-critical"></span>Revisar PA · Carlos R.</li>
+            </ul>
+          </div>
+          <figcaption class="phone-mini-caption">List</figcaption>
+        </figure>
+
+        <!-- 6. Card Grid — accesos a las tres caras + ajustes -->
+        <figure class="phone-mini">
+          <div class="phone-mini-screen">
+            <p class="label-caption-strong" style="margin-bottom: var(--space-app-8);">Cambiar de vista</p>
+            <div class="phone-mini-card-grid">
+              <div class="phone-mini-card-tile is-active"><span>👤</span>Enfermero</div>
+              <div class="phone-mini-card-tile"><span>🛏️</span>Paciente</div>
+              <div class="phone-mini-card-tile"><span>👪</span>Familia</div>
+              <div class="phone-mini-card-tile"><span>⚙️</span>Ajustes</div>
+            </div>
+          </div>
+          <figcaption class="phone-mini-caption">Card Grid</figcaption>
+        </figure>
+
+        <!-- 7. Product Page — recrea renderDetailEnfermero() de mockup/js/mockup.js -->
+        <figure class="phone-mini">
+          <div class="phone-mini-screen">
+            <div class="phone-mini-detail-header">
+              <span class="label-caption">← Hab. 304-A</span>
+              <p class="phone-mini-row-name" style="font-size: var(--text-app-heading-sm);">Carlos Rodríguez</p>
+            </div>
+            <p class="label-caption" style="margin: var(--space-app-8) 0 2px;">Valor clínico crudo</p>
+            <p class="phone-mini-blurred">PA 90/55 · taquicardia 112</p>
+            <span class="label-caption">oculto por defecto: esta pantalla la ve también el paciente desde la cama</span>
+          </div>
+          <figcaption class="phone-mini-caption">Product Page</figcaption>
+        </figure>
+
+        <!-- 8. Minimal — confirmación de evento en 1 toque -->
+        <figure class="phone-mini">
+          <div class="phone-mini-screen phone-mini-minimal">
+            <div class="phone-mini-minimal-block"></div>
+            <div class="phone-mini-minimal-block phone-mini-minimal-block-sm"></div>
+            <button type="button" class="btn-primary" disabled>✓ Hecho</button>
+          </div>
+          <figcaption class="phone-mini-caption">Minimal</figcaption>
+        </figure>
+
       </div>
     </section>
 

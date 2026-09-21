@@ -113,3 +113,24 @@ sensible tras un toque deliberado. Ambas reglas compiten. Resolución propuesta:
 - **Eventos fuera de lo esperado** (la minoría): exigen abrir el detalle y escribir,
   porque ahí sí hay dato sensible que no puede quedar a la vista de un vistazo.
 Esto es una hipótesis de diseño, marcada **POR CONFIRMAR EN CAMPO**.
+
+## Artefacto 4 (extensión) — Las 8 pantallas mobile
+
+Al pedido de un kit de mobile de referencia (Splash, Image Based, Dashboard,
+Analytics, List, Card Grid, Product Page, Minimal), cada una se llenó con
+datos reales del caso en vez de bloques genéricos, para no romper la
+convención de honestidad del resto del documento:
+
+| Pantalla | Contenido real | Fuente |
+|---|---|---|
+| Splash | Login de turno, logo + spinner | nuevo |
+| Image Based | Hero de bienvenida + accesos rápidos (Turno/Registrar/Pendientes/Mensajes) | nuevo |
+| Dashboard | Lista de pacientes del turno | recrea `renderHomeEnfermero()` de `mockup/js/mockup.js` |
+| Analytics | Signos vitales de Carlos Rodríguez (PA 90/55), dato oculto tras blur | nuevo, mismo patrón de ocultamiento que el prototipo |
+| List | Checklist de pendientes del turno | nuevo, mismos pacientes de la tabla de contenido |
+| Card Grid | Accesos a las tres caras + ajustes | nuevo |
+| Product Page | Detalle de un paciente, dato clínico oculto | recrea `renderDetailEnfermero()` de `mockup/js/mockup.js` |
+| Minimal | Confirmación de evento en 1 toque | nuevo, mismo patrón `tap-confirm` del prototipo |
+
+Son vista previa estática dentro del documento; la interacción real sigue
+viviendo en `mockup/`, al que la sección continúa linkeando.

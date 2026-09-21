@@ -107,8 +107,28 @@ distintas que no deberían compartir componente. Se separó en tres tokens de
 estado (`--state-honesty-*`, `--state-critical-*`, `--state-pending-*`) y tres
 clases (`.badge-honesty`, `.badge-critical`, `.badge-pending`).
 
+## El documento es un dashboard, no una página con scroll
+
+La primera vista es un **dashboard de 4 tiles**, una por sección (Contenido,
+Jerarquía, Navegación, Sistema de diseño), siguiendo la forma en que un
+Software Design Document se organiza por partes navegables. Sigue siendo
+**un solo `index.html`** (restricción de `tarea.txt`): no hay páginas
+separadas, hay un router en `js/app.js` que muestra/oculta secciones con la
+clase `.view.is-active`, el mismo mecanismo que ya usaba `mockup/`.
+
+Cada tile **no es un ícono ni un resumen inventado**: `renderDashboardTiles()`
+clona el `innerHTML` real de la sección y lo escala con `transform: scale()`
+para que quepa en la tile — mismo patrón que la vista de grilla de
+`courses/proyectos/entregas/presentacion/index.html` (`#grid`/`.mini`). Click
+en una tile navega a la sección completa; un botón "← Dashboard" vuelve. La
+URL lleva el hash de la sección activa (`#section-design-system`), así que
+cada vista es enlazable directamente y sobrevive a un refresh.
+
 ## Comportamiento
 
+- **Router de vistas**: dashboard ↔ 4 secciones, con transición de entrada
+  (doble `requestAnimationFrame` para que la clase `.is-visible` no colapse
+  contra el estado inicial) y sincronización de hash vía `history.replaceState`.
 - Navegación **global**: barra inferior por rol (3 destinos para enfermero, 2
   para paciente y familia), destino activo pintado con `--color-primary` y
   `aria-pressed`.
@@ -122,10 +142,34 @@ clases (`.badge-honesty`, `.badge-critical`, `.badge-pending`).
 - Generador de swatches de tokens: lee las custom properties reales de
   `:root` con `getComputedStyle`, no una lista hardcodeada. Se regenera al
   cambiar de tema, porque los valores hex resueltos cambian.
-- Cada sección se revela con fade + rise al entrar al viewport
-  (`IntersectionObserver`), no todo el documento aparece de golpe.
-- `prefers-reduced-motion` desactiva scroll-reveal, hover-lift y badge-pulse;
-  `:focus-visible` sobre `--color-primary` en todos los interactivos.
+- Las tiles se reescalan en `resize` (`scaleTiles()`), y se recalculan recién
+  **después** de que el dashboard sea visible — mientras `.view` tiene
+  `display:none`, `clientWidth` da 0 y la escala sale mal.
+- `prefers-reduced-motion` desactiva la transición de vistas, hover-lift y
+  badge-pulse; `:focus-visible` sobre `--color-primary` en todos los
+  interactivos.
+
+## Las 8 pantallas mobile, dentro de "Sistema de diseño"
+
+Al final de la sección 4, después de "Templates / views", hay una grilla de
+**8 pantallas** (Splash, Image Based, Dashboard, Analytics, List, Card Grid,
+Product Page, Minimal) — el catálogo de tipos de pantalla más común en un
+kit de mobile, aplicado con **datos reales** del caso en vez de bloques
+genéricos:
+
+| Pantalla | Contenido |
+|---|---|
+| Splash | Login de turno: logo + "Cargando tu turno…" |
+| Image Based | Hero de bienvenida + accesos rápidos (Turno/Registrar/Pendientes/Mensajes) |
+| Dashboard | Lista de pacientes del turno — recrea `renderHomeEnfermero()` de `mockup/js/mockup.js` |
+| Analytics | Signos vitales de Carlos Rodríguez (PA 90/55), con el dato oculto tras blur |
+| List | Checklist de pendientes del turno, con estado por ítem |
+| Card Grid | Accesos a las tres caras (enfermero/paciente/familia) + ajustes |
+| Product Page | Detalle de un paciente — recrea `renderDetailEnfermero()` de `mockup/js/mockup.js` |
+| Minimal | Confirmación de evento en 1 toque, el patrón `tap-confirm` del prototipo |
+
+Son vista previa **estática**: la interacción real (tocar, navegar, revelar el
+dato oculto) vive en `mockup/`, al que esta grilla sigue linkeando.
 
 ## Dos documentos, un solo sistema de tokens
 
@@ -158,11 +202,11 @@ procesos de página separados), pero el prototipo nace con el mismo primario.
 ## Archivos
 
 ```
-index.html            documento: contenido, jerarquía, navegación, sistema
+index.html            dashboard + 4 secciones (contenido, jerarquía, navegación, sistema)
 css/tokens.css         ÚNICOS colores del proyecto. El archivo que se prueba.
-css/styles.css         layout del documento, cero colores literales
+css/styles.css         router de vistas, tiles del dashboard, layout, cero colores literales
 css/atoms/             un átomo por archivo: button, input, badge, avatar, label
-js/app.js              selector de rol del documento, demo de tokens, scrollspy
+js/app.js              router (show/renderDashboardTiles), selector de rol, demo de tokens
 mockup/index.html       prototipo navegable de las 3 pantallas
 mockup/css/mockup.css   estilos y animaciones del prototipo, mismos tokens
 mockup/js/mockup.js     router de vistas, selector de rol, interacciones

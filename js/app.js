@@ -1,6 +1,7 @@
 /**
  * Stryds / Arquitectura de Información & Sistema de Diseño
- * Manejador principal de interactividad, persistencia de tokens y scrollspy.
+ * Manejador principal: router de vistas (dashboard + 4 secciones),
+ * generador de tiles, personalizador de tokens y toggle de tema.
  */
 (function () {
   'use strict';
@@ -14,11 +15,14 @@
   var el = {
     colorPrimaryInput: $('color-primary-input'),
     tokensGrid: $('tokens-grid'),
+    dashboardGrid: $('dashboardGrid'),
     roleButtons: null,
     rolePanels: null,
-    navLinks: null,
-    sections: null
+    views: null,
+    navLinks: null
   };
+
+  var DASHBOARD_ID = 'dashboard';
 
   /**
    * Inicializa el selector de roles de la Sección 3 (Navegación).
@@ -234,48 +238,146 @@
   }
 
   /**
-   * Scrollspy simple para iluminar el vínculo de navegación activo
-   * a medida que el usuario se desplaza por las 4 secciones principales.
+   * Router de vistas: dashboard + 4 secciones, todas en el mismo documento
+   * (requisito de tarea.txt: "un solo index.html"). Mismo patrón que
+   * mockup/js/mockup.js — .view/.view.is-active con doble requestAnimationFrame
+   * para que la transición de entrada corra en vez de saltar al estado final.
    */
-  function initScrollspy() {
-    el.navLinks = document.querySelectorAll('.doc-nav-link');
-    el.sections = document.querySelectorAll('.doc-section');
+  function show(viewId) {
+    if (!el.views || !el.views.length) return;
+    var target = null;
 
-    if (!el.navLinks.length || !el.sections.length) return;
+    el.views.forEach(function (view) {
+      var isTarget = view.id === viewId;
+      if (isTarget) target = view;
+      view.classList.remove('is-visible');
+      view.classList.toggle('is-active', isTarget);
+    });
 
-    var handleScroll = function () {
-      var scrollPos = window.scrollY || document.documentElement.scrollTop;
-      var offsetBuffer = 140; // Compensación por la barra de navegación fija
+    if (!target) return;
 
-      var currentSectionId = '';
-
-      el.sections.forEach(function (section) {
-        var top = section.offsetTop - offsetBuffer;
-        var height = section.offsetHeight;
-        if (scrollPos >= top && scrollPos < top + height) {
-          currentSectionId = section.getAttribute('id');
-        }
+    // Reflow antes de agregar is-visible: si no, el navegador colapsa el
+    // estado inicial y final de la transición y no se ve nada animarse.
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        target.classList.add('is-visible');
       });
+    });
 
-      // Si estamos muy cerca del inicio, marcar la primera sección
-      if (scrollPos < 200 && el.sections[0]) {
-        currentSectionId = el.sections[0].getAttribute('id');
+    // Si la vista es una sección (trae data-index), la tile del dashboard
+    // correspondiente se marca .cur para cuando el usuario vuelva atrás.
+    if (el.dashboardGrid) {
+      el.dashboardGrid.querySelectorAll('.dashboard-tile').forEach(function (tile) {
+        tile.classList.toggle('is-current', tile.getAttribute('data-view') === viewId);
+      });
+    }
+
+    el.navLinks.forEach(function (link) {
+      var isCurrent = link.getAttribute('data-view') === viewId;
+      link.classList.toggle('is-active', isCurrent);
+      if (isCurrent) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
       }
+    });
 
-      el.navLinks.forEach(function (link) {
-        var href = link.getAttribute('href');
-        if (href === '#' + currentSectionId) {
-          link.classList.add('is-active');
-          link.setAttribute('aria-current', 'page');
-        } else {
-          link.classList.remove('is-active');
-          link.removeAttribute('aria-current');
-        }
+    try { history.replaceState(null, '', '#' + viewId); } catch (e) { /* file:// a veces lo bloquea */ }
+
+    window.scrollTo({ top: 0, behavior: 'instant' in window.scrollTo ? 'instant' : 'auto' });
+  }
+
+  /**
+   * Genera las 4 tiles del dashboard clonando el innerHTML real de cada
+   * .view (excepto el propio dashboard) — no son íconos ni resúmenes
+   * inventados, es el contenido real de la sección en miniatura, escalado.
+   * Mismo patrón que #grid/.mini en presentacion/index.html.
+   */
+  function renderDashboardTiles() {
+    if (!el.dashboardGrid) return;
+    el.dashboardGrid.innerHTML = '';
+
+    var TILE_NATIVE_WIDTH = 1040; // ancho aproximado del contenido de una .view
+
+    el.views.forEach(function (view) {
+      if (view.id === DASHBOARD_ID) return;
+
+      var tile = document.createElement('button');
+      tile.type = 'button';
+      tile.className = 'dashboard-tile';
+      tile.setAttribute('data-view', view.id);
+      tile.setAttribute('aria-label', 'Abrir sección ' + (view.getAttribute('data-title') || view.id));
+
+      var mini = document.createElement('div');
+      mini.className = 'dashboard-tile-mini';
+      mini.style.width = TILE_NATIVE_WIDTH + 'px';
+      // Clon real del contenido, sin el botón "← Dashboard" (no tiene sentido
+      // en la miniatura) ni los <script> inline que pudiera arrastrar.
+      var clone = view.cloneNode(true);
+      var backBtn = clone.querySelector('.back-to-dashboard');
+      if (backBtn) backBtn.remove();
+      mini.innerHTML = clone.innerHTML;
+
+      var label = document.createElement('div');
+      label.className = 'dashboard-tile-label';
+      label.innerHTML =
+        '<span class="dashboard-tile-index">' + (view.getAttribute('data-index') || '') + '</span>' +
+        '<span class="dashboard-tile-title">' + (view.getAttribute('data-title') || view.id) + '</span>';
+
+      tile.appendChild(mini);
+      tile.appendChild(label);
+      tile.addEventListener('click', function () { show(view.id); });
+
+      el.dashboardGrid.appendChild(tile);
+    });
+
+    scaleTiles();
+  }
+
+  /**
+   * Recalcula la escala de cada .dashboard-tile-mini según el ancho real de
+   * su tile. Debe correr después de que el dashboard sea visible: mientras
+   * .view tiene display:none, clientWidth da 0 y la escala sale mal.
+   */
+  function scaleTiles() {
+    if (!el.dashboardGrid) return;
+    el.dashboardGrid.querySelectorAll('.dashboard-tile').forEach(function (tile) {
+      var mini = tile.querySelector('.dashboard-tile-mini');
+      if (!mini) return;
+      var tileWidth = tile.clientWidth || 320;
+      var nativeWidth = parseFloat(mini.style.width) || 1040;
+      mini.style.transform = 'scale(' + (tileWidth / nativeWidth) + ')';
+    });
+  }
+
+  /**
+   * Inicializa el router: cachea las vistas, cablea los data-view clickeables
+   * de la nav y los botones "← Dashboard", y abre la vista del hash actual
+   * (o el dashboard si no hay hash / no matchea ninguna vista).
+   */
+  function initRouter() {
+    el.views = document.querySelectorAll('.view');
+    el.navLinks = document.querySelectorAll('[data-view]');
+    if (!el.views.length) return;
+
+    el.navLinks.forEach(function (trigger) {
+      trigger.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        show(trigger.getAttribute('data-view'));
       });
-    };
+    });
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    document.querySelectorAll('.back-to-dashboard').forEach(function (btn) {
+      btn.addEventListener('click', function () { show(DASHBOARD_ID); });
+    });
+
+    window.addEventListener('resize', scaleTiles);
+
+    renderDashboardTiles();
+
+    var hash = (location.hash || '').replace('#', '');
+    var hasMatch = hash && document.getElementById(hash) && document.getElementById(hash).classList.contains('view');
+    show(hasMatch ? hash : DASHBOARD_ID);
   }
 
   /**
@@ -308,39 +410,13 @@
     syncButton();
   }
 
-  /**
-   * Revela cada .doc-section con un fade+rise cuando entra en el viewport,
-   * en vez de que todo el documento aparezca de golpe al cargar.
-   */
-  function initSectionReveal() {
-    var sections = document.querySelectorAll('.doc-section');
-    if (!sections.length) return;
-
-    if (!('IntersectionObserver' in window)) {
-      sections.forEach(function (s) { s.classList.add('is-visible'); });
-      return;
-    }
-
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-
-    sections.forEach(function (s) { observer.observe(s); });
-  }
-
   // Inicialización cuando el DOM esté listo
   function init() {
     initRoleSelector();
     initColorCustomizer();
     generateTokenSwatches();
-    initScrollspy();
     initThemeToggle();
-    initSectionReveal();
+    initRouter();
   }
 
   if (document.readyState === 'loading') {

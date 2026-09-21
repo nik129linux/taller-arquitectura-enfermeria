@@ -210,9 +210,12 @@ body {
   line-height: 1.45;
 }
 
-/* ============ SECCIONES — cada una se revela al entrar en viewport ============ */
-.doc-section {
-  display: flex;
+/* ============ ROUTER DE VISTAS — dashboard + 4 secciones ============
+   Mismo mecanismo que mockup/css/mockup.css (.view/.view.is-active): la vista
+   inactiva queda en el documento con opacity:0 y pointer-events:none en vez de
+   display:none, para poder animar la transición sin perder el layout. */
+.view {
+  display: none;
   flex-direction: column;
   gap: var(--space-doc-20);
   opacity: 0;
@@ -221,9 +224,106 @@ body {
               transform var(--duration-slow) var(--ease-out-quart);
 }
 
-.doc-section.is-visible {
+.view.is-active {
+  display: flex;
+}
+
+.view.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.back-to-dashboard {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  box-shadow: 0 0 0 1px var(--border-hairline);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-doc-caption);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-app-8) var(--space-app-16);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out-quart),
+              box-shadow var(--duration-fast) var(--ease-out-quart),
+              transform var(--duration-fast) var(--ease-out-expo);
+}
+
+.back-to-dashboard:hover {
+  color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+  transform: translateX(-2px);
+}
+
+/* ============ DASHBOARD — tiles vivas, clon real de cada .view ============ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-doc-20);
+}
+
+.dashboard-tile {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-card-doc);
+  background-color: var(--surface-card);
+  box-shadow: 0 0 0 1px var(--border-hairline);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow var(--duration-base) var(--ease-out-quart),
+              transform var(--duration-base) var(--ease-out-quart);
+}
+
+.dashboard-tile:hover {
+  box-shadow: 0 0 0 1px var(--color-primary), 0 16px 40px -20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+}
+
+.dashboard-tile:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+/* El clon vivo de la sección, escalado para caber en la tile. Nunca recibe
+   clicks propios: toda la tile es el botón, el clon es solo vista previa. */
+.dashboard-tile-mini {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  pointer-events: none;
+  padding: var(--space-doc-32);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-doc-20);
+}
+
+.dashboard-tile-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-app-8);
+  padding: var(--space-app-12) var(--space-doc-20);
+  background: linear-gradient(0deg, var(--surface-card) 55%, transparent);
+}
+
+.dashboard-tile-index {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
+}
+
+.dashboard-tile-title {
+  font-family: var(--font-display);
+  font-size: var(--text-doc-subheading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
 }
 
 .section-heading {
@@ -749,6 +849,280 @@ body {
   transform: translateX(4px);
 }
 
+/* ============ PANTALLAS MOBILE — 8 vistas, dentro de "Sistema de diseño" ============
+   Vista previa estática (pointer-events desactivado en los controles internos
+   vía disabled/aria-hidden según el caso): la interacción real vive en mockup/. */
+.phone-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-doc-20);
+}
+
+.phone-mini {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-app-8);
+}
+
+.phone-mini-screen {
+  aspect-ratio: 9 / 17;
+  background-color: var(--surface-canvas);
+  border-radius: var(--radius-card-app);
+  box-shadow: 0 0 0 1px var(--border-hairline), 0 0 0 5px var(--surface-card);
+  padding: var(--space-app-16);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow var(--duration-base) var(--ease-out-quart);
+}
+
+.phone-mini:hover .phone-mini-screen {
+  box-shadow: 0 0 0 1px var(--color-primary), 0 0 0 5px var(--surface-card);
+}
+
+.phone-mini-caption {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--text-doc-caption);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* 1. Splash */
+.phone-mini-splash {
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-app-12);
+  text-align: center;
+}
+
+.phone-mini-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  background-color: color-mix(in oklch, var(--color-primary) 18%, var(--surface-card));
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-app-heading-sm);
+}
+
+.phone-mini-splash-text {
+  font-size: var(--text-app-caption);
+  color: var(--text-muted);
+}
+
+.phone-mini-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border-hairline);
+  border-top-color: var(--color-primary);
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 2. Image Based */
+.phone-mini-hero {
+  gap: var(--space-app-12);
+  padding: 0;
+}
+
+.phone-mini-hero-banner {
+  background: linear-gradient(160deg,
+    var(--color-primary),
+    color-mix(in oklch, var(--color-primary) 55%, var(--surface-card)));
+  padding: var(--space-app-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-app-8);
+}
+
+.phone-mini-hero-title {
+  font-family: var(--font-display);
+  font-size: var(--text-app-heading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-ink);
+  line-height: 1.1;
+}
+
+.phone-mini-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-app-8);
+  padding: 0 var(--space-app-16) var(--space-app-16);
+}
+
+.phone-mini-quick-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background-color: var(--surface-card);
+  box-shadow: 0 0 0 1px var(--border-hairline);
+  border-radius: var(--radius-sm);
+  padding: var(--space-app-8);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* 3, 5, 7 — listas (Dashboard, List, Product Page) */
+.phone-mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-app-8);
+}
+
+.phone-mini-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-app-8);
+}
+
+.phone-mini-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-mini-row-name {
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.phone-mini-checklist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-app-12);
+  font-size: 10px;
+  color: var(--text-primary);
+}
+
+.phone-mini-checklist li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-app-8);
+}
+
+.phone-mini-check {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-xs);
+  box-shadow: 0 0 0 1px var(--border-strong);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--color-primary-ink);
+}
+
+.phone-mini-check.is-done {
+  background-color: var(--color-primary);
+  box-shadow: none;
+}
+
+.phone-mini-check.is-critical {
+  box-shadow: 0 0 0 1px var(--state-critical-border);
+  background-color: var(--state-critical-bg);
+}
+
+.phone-mini-detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--space-app-8);
+}
+
+/* 4. Analytics */
+.phone-mini-vitals-ring {
+  width: 56px;
+  height: 56px;
+  margin: var(--space-app-8) auto;
+  border-radius: 50%;
+  background: conic-gradient(var(--state-critical-text) 0% 30%, var(--surface-card-alt) 30% 100%);
+}
+
+.phone-mini-vitals-value {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--text-app-heading-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.phone-mini-vitals-row {
+  display: flex;
+  justify-content: center;
+  margin: var(--space-app-8) 0;
+}
+
+.phone-mini-blurred {
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--state-critical-text);
+  filter: blur(4px);
+  text-align: center;
+  user-select: none;
+}
+
+/* 6. Card Grid */
+.phone-mini-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-app-8);
+}
+
+.phone-mini-card-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-unit);
+  background-color: var(--surface-card);
+  box-shadow: 0 0 0 1px var(--border-hairline);
+  border-radius: var(--radius-sm);
+  padding: var(--space-app-12) var(--space-app-8);
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.phone-mini-card-tile.is-active {
+  box-shadow: 0 0 0 1px var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* 8. Minimal */
+.phone-mini-minimal {
+  gap: var(--space-app-12);
+  justify-content: center;
+}
+
+.phone-mini-minimal-block {
+  height: 64px;
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-card);
+  box-shadow: 0 0 0 1px var(--border-hairline);
+}
+
+.phone-mini-minimal-block-sm {
+  height: 40px;
+}
+
+.phone-mini-minimal .btn-primary {
+  align-self: center;
+  opacity: 0.7;
+  cursor: default;
+}
+
 /* ============ FOOTER ============ */
 .doc-footer {
   border-top: 1px solid var(--border-hairline);
@@ -775,6 +1149,14 @@ body {
   .tokens-grid {
     grid-template-columns: 1fr;
   }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-mini-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -782,7 +1164,7 @@ body {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
-  .doc-section {
+  .view {
     opacity: 1;
     transform: none;
   }
