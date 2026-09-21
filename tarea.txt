@@ -26,6 +26,8 @@ REQUISITOS
      debe llevar a más detalle real).
   4. Sistema de diseño en Atomic Design: átomos -> moléculas -> organismos ->
      templates/páginas -> pantallas. Un átomo = un archivo aparte.
+  5. Mockup de mobile: prototipo navegable con las pantallas reales de la
+     app (no una captura estática dentro del documento).
   5. Design tokens con nomenclatura técnica: patrón, color, peso (bg-color-weight),
      nunca al revés.
   6. Archivo de configuración de colores central. El profesor va a cambiar el color

@@ -622,6 +622,31 @@ body {
   padding: 0 var(--space-app-12);
 }
 
+/* CTA hacia el prototipo móvil (mockup/, fuera de este documento) */
+.mockup-cta-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card-doc);
+  padding: var(--space-doc-32);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-doc-20);
+  flex-wrap: wrap;
+}
+
+.mockup-cta-text {
+  flex: 1;
+  min-width: 260px;
+}
+
+.mockup-cta-btn {
+  font-size: var(--text-doc-body);
+  padding: var(--space-app-16) var(--space-doc-32);
+  gap: var(--space-app-12);
+  white-space: nowrap;
+}
+
 /* ============ FOOTER ============ */
 .doc-footer {
   border-top: 1px solid var(--border-hairline);

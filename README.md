@@ -102,20 +102,52 @@ clases (`.badge-honesty`, `.badge-critical`, `.badge-pending`).
 - `prefers-reduced-motion`, `:focus-visible` sobre `--color-primary`,
   `aria-live` en el selector de color.
 
+## Dos documentos, un solo sistema de tokens
+
+El documento (`index.html`) es el trabajo escrito: contenido, jerarquía,
+navegación, sistema de diseño. La sección 4 termina en un botón —
+**"Abrir prototipo móvil"** — que lleva a `mockup/index.html`: las tres
+pantallas (enfermero, paciente, familia) como prototipo navegable, con
+transiciones reales entre vistas, no una captura fija incrustada en el
+documento. Los dos leen del mismo `css/tokens.css`, así que el cambio de
+`--color-primary` en la sección 4 del documento no se ve reflejado ahí (son
+procesos de página separados), pero el prototipo nace con el mismo primario.
+
+### Qué anima el prototipo, y por qué
+
+- **Selector de rol** con un indicador que se desliza (no que parpadea) entre
+  Enfermero / Paciente / Familia — el cambio de cara es un cambio de modelo
+  mental, se ve como tal.
+- **Navegación de detalle** que empuja desde la derecha al abrir un paciente,
+  como una navegación real, y vuelve con el botón atrás.
+- **Dato clínico oculto tras blur**, no tras texto chico: el prototipo aplica
+  literalmente `ideas.md:31` ("no lo resuelve ningún tamaño de letra"). Se
+  revela con un toque deliberado sobre el valor.
+- **Confirmación en 1 toque** para eventos previstos del plan de cuidado, con
+  feedback inmediato (un check que aparece), sin abrir ningún formulario —
+  la respuesta al límite de tiempo de `ideas.md:25`.
+- **Entrada escalonada de tarjetas** al cambiar de vista, para que el cambio
+  de rol se sienta como una pantalla nueva y no como un refresh.
+- `prefers-reduced-motion` apaga todo lo anterior.
+
 ## Archivos
 
 ```
-index.html          las 4 secciones: contenido, jerarquía, navegación, sistema
-css/tokens.css       ÚNICOS colores del proyecto. El archivo que se prueba.
-css/styles.css       layout del documento, cero colores literales
-css/atoms/           un átomo por archivo: button, input, badge, avatar, label
-js/app.js            selector de rol, demo de tokens, scrollspy
-content-spec.md      el contenido/jerarquía/navegación en markdown, insumo de trabajo
-tarea.txt            el encargo dictado en clase
-entrega.txt          repositorio + demo
+index.html            documento: contenido, jerarquía, navegación, sistema
+css/tokens.css         ÚNICOS colores del proyecto. El archivo que se prueba.
+css/styles.css         layout del documento, cero colores literales
+css/atoms/             un átomo por archivo: button, input, badge, avatar, label
+js/app.js              selector de rol del documento, demo de tokens, scrollspy
+mockup/index.html       prototipo navegable de las 3 pantallas
+mockup/css/mockup.css   estilos y animaciones del prototipo, mismos tokens
+mockup/js/mockup.js     router de vistas, selector de rol, interacciones
+content-spec.md        el contenido/jerarquía/navegación en markdown, insumo de trabajo
+tarea.txt              el encargo dictado en clase
+entrega.txt            repositorio + demo
 ```
 
 Vanilla HTML/CSS/JS, sin build tools, sin frameworks — el mismo criterio que
-`3tarea`. El maquetado se generó con `agy` (Antigravity CLI, modelo
+`3tarea`. El documento se generó con `agy` (Antigravity CLI, modelo
 `gemini-3.7-flash-low`) a partir de `content-spec.md` y `css/tokens.css`, con
-revisión manual sobre archivos de colores y semántica de componentes.
+revisión manual sobre archivos de colores y semántica de componentes. El
+prototipo móvil (`mockup/`) se escribió a mano.
