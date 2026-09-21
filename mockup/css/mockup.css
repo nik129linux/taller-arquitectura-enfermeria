@@ -23,13 +23,23 @@ body {
   min-height: 100vh;
   padding: var(--space-doc-32) var(--space-doc-16);
   gap: var(--space-doc-20);
+  transition: background-color var(--duration-slow) var(--ease-out-quart),
+              color var(--duration-slow) var(--ease-out-quart);
 }
 
-.back-to-doc {
+.mockup-topbar {
   position: fixed;
   top: var(--space-doc-16);
   left: var(--space-doc-16);
+  right: var(--space-doc-16);
   z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-app-12);
+}
+
+.back-to-doc {
   font-family: var(--font-body);
   font-size: var(--text-doc-caption);
   font-weight: var(--font-weight-medium);
@@ -37,15 +47,73 @@ body {
   text-decoration: none;
   padding: var(--space-app-8) var(--space-app-16);
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border-hairline);
+  box-shadow: 0 0 0 1px var(--border-hairline);
   background-color: var(--surface-card);
-  transition: color .15s ease, border-color .15s ease;
+  transition: color var(--duration-fast) var(--ease-out-quart),
+              box-shadow var(--duration-fast) var(--ease-out-quart);
 }
 
 .back-to-doc:hover {
   color: var(--color-primary);
-  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
 }
+
+/* Toggle de tema — mismo componente visual que el documento principal */
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-app-8);
+  background-color: var(--surface-card);
+  box-shadow: 0 0 0 1px var(--border-hairline);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: var(--space-unit);
+  padding-right: var(--space-app-12);
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: var(--text-doc-caption);
+  transition: box-shadow var(--duration-fast) var(--ease-out-quart);
+}
+
+.theme-toggle:hover {
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+.theme-toggle-track {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  background-color: var(--surface-card-alt);
+  flex-shrink: 0;
+  transition: background-color var(--duration-base) var(--ease-out-quart);
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  transition: transform var(--duration-base) var(--ease-out-expo);
+}
+
+:root[data-theme="light"] .theme-toggle-thumb {
+  transform: translateX(16px);
+}
+
+.theme-toggle-icon {
+  display: none;
+  font-size: 13px;
+}
+
+.theme-toggle-icon-sun { display: inline; }
+:root[data-theme="light"] .theme-toggle-icon-sun { display: none; }
+:root[data-theme="light"] .theme-toggle-icon-moon { display: inline; }
+.theme-toggle-icon-moon { display: none; }
 
 .stage {
   display: flex;
@@ -125,7 +193,7 @@ body {
   padding: var(--space-app-8) 0;
   border-radius: var(--radius-pill);
   cursor: pointer;
-  transition: color .25s ease;
+  transition: color var(--duration-base) var(--ease-out-quart);
 }
 
 .role-tab.is-active {
@@ -144,7 +212,7 @@ body {
   width: calc((100% - 6px) / 3);
   background-color: var(--color-primary);
   border-radius: var(--radius-pill);
-  transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+  transition: transform var(--duration-base) var(--ease-out-expo);
 }
 
 /* ============ PANTALLA — el contenedor donde entran/salen las vistas ============ */
@@ -165,7 +233,7 @@ body {
   opacity: 0;
   transform: translateX(24px);
   pointer-events: none;
-  transition: opacity .28s ease, transform .28s cubic-bezier(.4, 0, .2, 1);
+  transition: opacity var(--duration-slow) var(--ease-out-quart), transform var(--duration-slow) var(--ease-out-expo);
 }
 
 .view.is-active {
@@ -218,7 +286,7 @@ body {
   font-size: var(--text-app-body);
   cursor: pointer;
   flex-shrink: 0;
-  transition: border-color .15s ease;
+  transition: box-shadow var(--duration-fast) var(--ease-out-quart);
 }
 
 .back-btn:hover {
@@ -235,7 +303,7 @@ body {
   border-radius: var(--radius-card-app);
   padding: var(--space-app-16);
   cursor: pointer;
-  transition: border-color .15s ease, transform .15s ease;
+  transition: box-shadow var(--duration-fast) var(--ease-out-quart), transform var(--duration-fast) var(--ease-out-expo);
   text-align: left;
   width: 100%;
   font-family: inherit;
@@ -313,7 +381,7 @@ body {
   font-size: var(--text-app-caption);
   color: var(--state-critical-text);
   filter: blur(5px);
-  transition: filter .2s ease;
+  transition: filter var(--duration-base) var(--ease-out-quart);
   cursor: pointer;
   user-select: none;
 }
@@ -402,7 +470,7 @@ body {
   font-size: var(--text-app-caption);
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: transform .15s ease, opacity .3s ease;
+  transition: transform var(--duration-fast) var(--ease-out-expo), opacity var(--duration-slow) var(--ease-out-quart);
   flex-shrink: 0;
 }
 
@@ -417,7 +485,9 @@ body {
 
 /* Micro-animación de confirmación: un check que aparece y se desvanece,
    feedback inmediato para "cualquier cosa que tarde más de unos segundos
-   no se va a usar" (ideas.md:25). */
+   no se va a usar" (ideas.md:25). Único lugar del proyecto con overshoot
+   (cubic-bezier con pico >1): es la respuesta táctil a un toque real del
+   enfermero, no decoración — en cualquier otro elemento se usa ease-out. */
 @keyframes confirm-pop {
   0% { transform: scale(.5); opacity: 0; }
   40% { transform: scale(1.15); opacity: 1; }
@@ -426,7 +496,7 @@ body {
 
 .confirm-check {
   display: none;
-  animation: confirm-pop .35s cubic-bezier(.34, 1.56, .64, 1);
+  animation: confirm-pop var(--duration-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .tap-confirm.is-done .confirm-check {
@@ -460,12 +530,12 @@ body {
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   padding: var(--space-app-8) var(--space-app-12);
-  transition: color .2s ease, transform .2s cubic-bezier(.34, 1.56, .64, 1);
+  transition: color var(--duration-base) var(--ease-out-quart);
 }
 
 .nav-item .nav-icon {
   font-size: var(--text-app-subheading);
-  transition: transform .2s cubic-bezier(.34, 1.56, .64, 1);
+  transition: transform var(--duration-base) var(--ease-out-expo);
 }
 
 .nav-item.is-active {
@@ -484,7 +554,7 @@ body {
 
 .view.is-active .card-list .p-card,
 .view.is-active .timeline-item {
-  animation: card-in .32s cubic-bezier(.2, .8, .2, 1) both;
+  animation: card-in var(--duration-slow) var(--ease-out-quart) both;
 }
 
 .view.is-active .card-list .p-card:nth-child(1) { animation-delay: .02s; }

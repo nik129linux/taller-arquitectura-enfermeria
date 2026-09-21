@@ -19,25 +19,37 @@
   border-radius: var(--radius-pill);
   box-sizing: border-box;
   white-space: nowrap;
+  transition: transform var(--duration-fast) var(--ease-out-expo);
 }
 
 /* Dato sin confirmar en campo (ámbar) — honestidad, no urgencia clínica */
 .badge-honesty {
   background-color: var(--state-honesty-bg);
-  border: 1px solid var(--state-honesty-border);
+  box-shadow: 0 0 0 1px var(--state-honesty-border);
   color: var(--state-honesty-text);
 }
 
-/* Alerta clínica urgente (rojo) — un valor fuera de rango real */
+/* Alerta clínica urgente (rojo) — un valor fuera de rango real.
+   Pulso sutil: es la única badge que reclama atención activa. */
 .badge-critical {
   background-color: var(--state-critical-bg);
-  border: 1px solid var(--state-critical-border);
+  box-shadow: 0 0 0 1px var(--state-critical-border);
   color: var(--state-critical-text);
+  animation: badge-pulse 2.4s var(--ease-out-soft) infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--state-critical-border); }
+  50% { box-shadow: 0 0 0 4px color-mix(in oklch, var(--state-critical-border) 35%, transparent); }
 }
 
 /* Pendiente regular, sin urgencia (gris / neutral) */
 .badge-pending {
   background-color: var(--state-pending-bg);
-  border: 1px solid var(--state-pending-border);
+  box-shadow: 0 0 0 1px var(--state-pending-border);
   color: var(--state-pending-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge-critical { animation: none; }
 }

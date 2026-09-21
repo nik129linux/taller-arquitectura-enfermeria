@@ -13,7 +13,20 @@
   <link rel="stylesheet" href="css/atoms/avatar.css">
   <link rel="stylesheet" href="css/atoms/label.css">
   <link rel="stylesheet" href="css/styles.css">
-  
+
+  <!-- Aplica el tema guardado ANTES del primer paint: si esto corriera en
+       app.js con defer, se vería un parpadeo oscuro→claro en cada carga. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      } catch (e) { /* localStorage bloqueado: se queda en el tema por defecto */ }
+    })();
+  </script>
+
   <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -33,6 +46,11 @@
           <li><a href="#section-design-system" class="doc-nav-link">4. Sistema de diseño</a></li>
         </ul>
       </nav>
+      <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar a modo claro" aria-pressed="false">
+        <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+        <span class="theme-toggle-icon theme-toggle-icon-sun" aria-hidden="true">☀</span>
+        <span class="theme-toggle-icon theme-toggle-icon-moon" aria-hidden="true">☾</span>
+      </button>
     </div>
   </header>
 
@@ -50,7 +68,7 @@
 
     <!-- ==================== SECCIÓN 1: CONTENIDO ==================== -->
     <section id="section-content" class="doc-section">
-      <h2 class="section-heading">1. Contenido</h2>
+      <h2 class="section-heading" data-index="01">Contenido</h2>
 
       <article class="doc-card">
         <h3 class="subsection-heading">Por qué tres lectores, no dos</h3>
@@ -193,7 +211,7 @@
 
     <!-- ==================== SECCIÓN 2: JERARQUÍA ==================== -->
     <section id="section-hierarchy" class="doc-section">
-      <h2 class="section-heading">2. Jerarquía</h2>
+      <h2 class="section-heading" data-index="02">Jerarquía</h2>
 
       <div class="doc-card">
         <p class="doc-text-muted">Estructura arbórea de navegación y priorización cognitiva adaptada a los objetivos de cada rol.</p>
@@ -276,7 +294,7 @@
 
     <!-- ==================== SECCIÓN 3: NAVEGACIÓN ==================== -->
     <section id="section-navigation" class="doc-section">
-      <h2 class="section-heading">3. Navegación</h2>
+      <h2 class="section-heading" data-index="03">Navegación</h2>
 
       <div class="role-preview-card">
         <h3 class="subsection-heading">Selector interactivo de rol</h3>
@@ -388,7 +406,7 @@
 
     <!-- ==================== SECCIÓN 4: SISTEMA DE DISEÑO ==================== -->
     <section id="section-design-system" class="doc-section">
-      <h2 class="section-heading">4. Sistema de diseño</h2>
+      <h2 class="section-heading" data-index="04">Sistema de diseño</h2>
 
       <!-- a) Design tokens -->
       <h3 class="subsection-heading">Design tokens</h3>
@@ -406,7 +424,7 @@
           <input type="color" id="color-primary-input" class="input-color" aria-label="Selector de color primario">
         </div>
         <p class="color-picker-note">
-          El primario es Electric Lime, no el negro de fondo. Los tonos oscuros son superficie (--surface-*), nunca --color-primary.
+          El primario es un azul deliberado (#90b8f0), no el negro de fondo. Los tonos oscuros son superficie (--surface-*), nunca --color-primary.
         </p>
       </div>
 

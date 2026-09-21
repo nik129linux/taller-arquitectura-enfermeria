@@ -318,7 +318,49 @@
     moveIndicator(0);
   }
 
+  // ============ STATUS BAR — hora real, no hardcodeada ============
+  function initStatusClock() {
+    var timeEl = document.querySelector('.status-time');
+    if (!timeEl) return;
+    function tick() {
+      var now = new Date();
+      var h = String(now.getHours()).padStart(2, '0');
+      var m = String(now.getMinutes()).padStart(2, '0');
+      timeEl.textContent = h + ':' + m;
+    }
+    tick();
+    setInterval(tick, 15000);
+  }
+
+  // ============ TOGGLE DE TEMA — mismo key que el documento principal,
+  // así el tema persiste al cruzar entre index.html y mockup/index.html ============
+  function initThemeToggle() {
+    var btn = $('themeToggle');
+    if (!btn) return;
+
+    function currentTheme() {
+      return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    }
+
+    function syncButton() {
+      var isLight = currentTheme() === 'light';
+      btn.setAttribute('aria-pressed', String(isLight));
+      btn.setAttribute('aria-label', isLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro');
+    }
+
+    btn.addEventListener('click', function () {
+      var next = currentTheme() === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) { /* modo incógnito estricto */ }
+      syncButton();
+    });
+
+    syncButton();
+  }
+
   // ============ INIT ============
   initRoleSwitch();
+  initStatusClock();
+  initThemeToggle();
   renderScreen();
 })();

@@ -1,6 +1,6 @@
 /*
  * Átomo: Input (campos de texto y selector de color)
- * Controles de entrada de datos con estilo coherente a la paleta Stryds.
+ * Controles de entrada con estilo coherente al sistema de tokens.
  */
 
 .input-text,
@@ -13,11 +13,12 @@ input[type="search"] {
   font-size: var(--text-app-body);
   color: var(--text-primary);
   background-color: var(--surface-card);
-  border: 1px solid var(--border-hairline);
+  border: none;
+  box-shadow: 0 0 0 1px var(--border-hairline);
   border-radius: var(--radius-sm);
   padding: var(--space-app-12) var(--space-app-16);
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: box-shadow var(--duration-fast) var(--ease-out-quart);
 }
 
 .input-text::placeholder,
@@ -29,7 +30,7 @@ input[type="search"]::placeholder {
 .input-text:focus,
 input[type="text"]:focus,
 input[type="search"]:focus {
-  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary);
 }
 
 /* Control especializado para el selector de color del sistema de diseño */
@@ -41,19 +42,26 @@ input[type="color"] {
   width: 48px;
   height: 48px;
   background-color: var(--surface-card);
-  border: 1px solid var(--border-hairline);
+  border: none;
+  box-shadow: 0 0 0 1px var(--border-hairline);
   border-radius: var(--radius-pill);
   padding: var(--space-unit);
   cursor: pointer;
   box-sizing: border-box;
-  transition: border-color 0.15s ease;
+  transition: box-shadow var(--duration-fast) var(--ease-out-quart),
+              transform var(--duration-fast) var(--ease-out-expo);
+}
+
+.input-color:hover,
+input[type="color"]:hover {
+  transform: scale(1.05);
 }
 
 .input-color:focus-visible,
 input[type="color"]:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
-  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
 }
 
 .input-color::-webkit-color-swatch-wrapper,

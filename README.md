@@ -46,23 +46,45 @@ crudo; los eventos **fuera de lo esperado** exigen abrir el detalle. Es una
 hipótesis, marcada `POR CONFIRMAR EN CAMPO` porque las entrevistas todavía no
 se hicieron.
 
-## El sistema de diseño: Stryds, con los roles declarados
+## El sistema de diseño: Stryds, con los roles declarados y en OKLCH
 
-`css/tokens.css` aplica el sistema `tareas/resources/` (Stryds): fondo casi
-negro, Electric Lime como único acento, botones pill de 100px de radio,
-tarjetas de 40px. El profesor dijo en clase que **"el blanco y el negro no
-hacen parte de colores primarios, punto"**, así que el archivo declara el rol
-de cada tono en vez de asumirlo:
+`css/tokens.css` parte del sistema `tareas/resources/` (Stryds) pero con dos
+cambios deliberados: el primario es **`#90b8f0`** en vez del lima original, y
+todo el archivo está en **OKLCH** en vez de hex — permite bajar el chroma cerca
+de los extremos de luminosidad sin que los grises tiendan a verse sucios ni
+saturados de más, y hace que los neutros se sientan tintados hacia el mismo
+hue del primario en vez de negro plano. El profesor dijo en clase que
+**"el blanco y el negro no hacen parte de colores primarios, punto"**, así que
+el archivo declara el rol de cada tono en vez de asumirlo:
 
 ```css
---color-primary:    #a6ff00;   /* PRIMARIO — la prueba del profesor corre acá */
---surface-obsidian:  #101010;   /* superficie, nunca primario */
---surface-carbon:    #171717;   /* superficie elevada */
+--color-primary: oklch(78.6% 0.075 246.8);  /* #90b8f0 — PRIMARIO, la prueba del profesor corre acá */
+--surface-canvas: oklch(15% 0.012 250);      /* superficie, nunca primario */
+--surface-card: oklch(19.5% 0.014 250);      /* superficie elevada */
 ```
 
 La sección 4 tiene un selector de color en vivo sobre `--color-primary`: cambia
 el valor y **todo** el sistema — nav activa, botones, foco, badges — se
 repinta, porque ningún componente tiene un color propio fuera de ese token.
+
+### Modo claro, con toggle explícito
+
+El botón de la barra superior alterna `data-theme="light"` en `<html>` y
+persiste en `localStorage` bajo la misma clave en el documento y en el
+prototipo, así el tema cruza entre las dos páginas. El tema se aplica **antes
+del primer paint** con un script inline en el `<head>` (no con `app.js`
+diferido), para no mostrar un parpadeo oscuro→claro en cada carga. El interior
+del prototipo móvil se queda oscuro siempre — Stryds es un sistema clínico
+nocturno por diseño — y el toggle ahí solo afecta el fondo detrás del teléfono.
+
+### Motion: ease-out exponencial, un solo overshoot documentado
+
+Las transiciones usan `--ease-out-expo`/`--ease-out-quart` (sin rebote) para
+todo lo estructural: revelado de secciones al hacer scroll (`IntersectionObserver`),
+apertura de los `<details>` de jerarquía, hover de tarjetas y swatches, el
+thumb del toggle de tema. La única excepción con overshoot es el check de
+`tap-confirm` en el prototipo — está comentado en el CSS como la respuesta
+táctil a un toque real del enfermero, no decoración.
 
 ### Dos escalas, un mismo set de tokens
 
@@ -95,12 +117,15 @@ clases (`.badge-honesty`, `.badge-critical`, `.badge-pending`).
   los portafolios de semestres anteriores.
 - Árboles de jerarquía colapsables por `<details>`, uno por rol, con su
   criterio de orden declarado (urgencia / ansiedad / logística).
-- Selector de color en la sección 4 persiste con `localStorage`, envuelto en
-  `try/catch`.
+- Selector de color y **toggle de tema claro/oscuro** en la sección 4,
+  ambos persisten con `localStorage`, envueltos en `try/catch`.
 - Generador de swatches de tokens: lee las custom properties reales de
-  `:root` con `getComputedStyle`, no una lista hardcodeada.
-- `prefers-reduced-motion`, `:focus-visible` sobre `--color-primary`,
-  `aria-live` en el selector de color.
+  `:root` con `getComputedStyle`, no una lista hardcodeada. Se regenera al
+  cambiar de tema, porque los valores hex resueltos cambian.
+- Cada sección se revela con fade + rise al entrar al viewport
+  (`IntersectionObserver`), no todo el documento aparece de golpe.
+- `prefers-reduced-motion` desactiva scroll-reveal, hover-lift y badge-pulse;
+  `:focus-visible` sobre `--color-primary` en todos los interactivos.
 
 ## Dos documentos, un solo sistema de tokens
 

@@ -6,11 +6,33 @@
 <title>Prototipo móvil — App de enfermería</title>
 <link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="css/mockup.css">
+
+<!-- Mismo mecanismo que index.html: aplica el tema guardado antes del
+     primer paint. Afecta el STAGE (fondo detrás del teléfono), no el
+     interior del prototipo — Stryds es un sistema clínico nocturno por
+     diseño y el teléfono se queda oscuro siempre. -->
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('theme');
+      if (saved === 'light' || saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    } catch (e) { /* localStorage bloqueado */ }
+  })();
+</script>
 </head>
 <body>
 
-  <!-- Vuelve al documento de arquitectura. No es una pantalla de la app: es chrome del entregable. -->
-  <a href="../index.html" class="back-to-doc">← Documento</a>
+  <div class="mockup-topbar">
+    <!-- Vuelve al documento de arquitectura. No es una pantalla de la app: es chrome del entregable. -->
+    <a href="../index.html" class="back-to-doc">← Documento</a>
+    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar a modo claro" aria-pressed="false">
+      <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+      <span class="theme-toggle-icon theme-toggle-icon-sun" aria-hidden="true">☀</span>
+      <span class="theme-toggle-icon theme-toggle-icon-moon" aria-hidden="true">☾</span>
+    </button>
+  </div>
 
   <div class="stage">
     <!-- El frame de teléfono es UNA sola instancia; las pantallas se apilan

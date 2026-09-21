@@ -1,7 +1,8 @@
 /*
  * Átomo: Botón (.btn-primary, .btn-secondary)
- * Define las acciones interactivas primarias y secundarias.
- * Sigue el sistema Stryds con bordes redondeados completos (--radius-pill).
+ * Bordes redondeados completos (--radius-pill). Motion: ease-out exponencial
+ * en hover/focus, sin rebote; el único overshoot vive en mockup/ (tap-confirm),
+ * documentado como feedback táctil, no acá.
  */
 
 .btn-primary,
@@ -18,25 +19,31 @@
   border-radius: var(--radius-pill);
   text-decoration: none;
   cursor: pointer;
-  transition: opacity 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  transition: opacity var(--duration-fast) var(--ease-out-quart),
+              box-shadow var(--duration-fast) var(--ease-out-quart),
+              color var(--duration-fast) var(--ease-out-quart),
+              transform var(--duration-fast) var(--ease-out-expo);
   user-select: none;
   box-sizing: border-box;
 }
 
 .btn-primary:active,
 .btn-secondary:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
-/* Primario: Electric Lime sólido para la acción crítica */
+/* Primario: sólido, con leve elevación al pasar el mouse */
 .btn-primary {
   background-color: var(--color-primary);
   color: var(--color-primary-ink);
-  border: 1px solid var(--color-primary);
+  border: none;
+  box-shadow: 0 0 0 1px var(--color-primary);
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 0 0 1px var(--color-primary-hover), 0 8px 20px -10px var(--color-primary);
+  transform: translateY(-1px);
 }
 
 .btn-primary:focus-visible {
@@ -44,15 +51,16 @@
   outline-offset: 3px;
 }
 
-/* Secundario: Contorno tenue para acciones auxiliares sin competir con el primario */
+/* Secundario: contorno tenue para acciones auxiliares */
 .btn-secondary {
   background-color: transparent;
   color: var(--text-primary);
-  border: 1px solid var(--border-hairline);
+  border: none;
+  box-shadow: 0 0 0 1px var(--border-hairline);
 }
 
 .btn-secondary:hover {
-  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
   color: var(--color-primary);
 }
 

@@ -278,18 +278,74 @@
     handleScroll();
   }
 
-  // Inicialización cuando el DOM esté listo
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      initRoleSelector();
-      initColorCustomizer();
+  /**
+   * Toggle de tema claro/oscuro. El tema ya se aplicó antes del primer paint
+   * (script inline en el <head>); esto solo maneja el click y persiste.
+   */
+  function initThemeToggle() {
+    var btn = $('themeToggle');
+    if (!btn) return;
+
+    function currentTheme() {
+      return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    }
+
+    function syncButton() {
+      var isLight = currentTheme() === 'light';
+      btn.setAttribute('aria-pressed', String(isLight));
+      btn.setAttribute('aria-label', isLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro');
+    }
+
+    btn.addEventListener('click', function () {
+      var next = currentTheme() === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) { /* modo incógnito estricto */ }
+      syncButton();
+      // Vuelve a generar los swatches: sus valores hex cambian con el tema.
       generateTokenSwatches();
-      initScrollspy();
     });
-  } else {
+
+    syncButton();
+  }
+
+  /**
+   * Revela cada .doc-section con un fade+rise cuando entra en el viewport,
+   * en vez de que todo el documento aparezca de golpe al cargar.
+   */
+  function initSectionReveal() {
+    var sections = document.querySelectorAll('.doc-section');
+    if (!sections.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      sections.forEach(function (s) { s.classList.add('is-visible'); });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+    sections.forEach(function (s) { observer.observe(s); });
+  }
+
+  // Inicialización cuando el DOM esté listo
+  function init() {
     initRoleSelector();
     initColorCustomizer();
     generateTokenSwatches();
     initScrollspy();
+    initThemeToggle();
+    initSectionReveal();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();

@@ -1,52 +1,54 @@
 /*
- * Design tokens — sistema Stryds aplicado al caso de enfermería.
- * Fuente: ../resources/variables.css y ../resources/tokens.json (sistema Stryds).
- * Ningún color, tamaño, radio o espacio vive fuera de este archivo.
+ * Design tokens — sistema aplicado al caso de enfermería, en OKLCH.
+ * Fuente original: ../resources/variables.css (sistema Stryds). El primario
+ * se reemplazó por #90b8f0 (oklch 78.6% .075 246.8) a pedido explícito.
+ * Ningún color, tamaño, radio, espacio o timing vive fuera de este archivo.
  *
- * Nomenclatura: patrón, luego color, luego peso (nunca al revés). Ej: bg-color-weight.
- * Roles en vez de nombres de marca: el profesor dijo que el blanco y el negro
- * "no hacen parte de colores primarios, punto". Por eso Obsidian/Carbon/Void
- * se declaran como SUPERFICIE y el primario es Electric Lime.
+ * Nomenclatura: patrón, luego color, luego peso (nunca al revés).
+ * Estrategia de color: Committed — el primario lleva peso real (nav activa,
+ * botones, focos, acentos de las tarjetas críticas), no es un accent ≤10%.
  */
 
 :root {
   color-scheme: dark;
 
-  /* ============ COLOR — roles, no nombres de marca ============ */
+  /* ============ COLOR — OKLCH, roles no nombres de marca ============ */
 
-  /* Primario: el único color de acción. Sobre esto corre la prueba del profesor. */
-  --color-primary: #a6ff00;        /* Electric Lime — botones, nav activa, foco */
-  --color-primary-ink: #101010;    /* texto sobre el primario (Obsidian) */
+  /* Primario: #90b8f0 pedido explícitamente. Reemplaza al lima de Stryds. */
+  --color-primary: oklch(78.6% 0.075 246.8);       /* #90b8f0 */
+  --color-primary-hover: oklch(83% 0.065 246.8);
+  --color-primary-active: oklch(72% 0.09 246.8);
+  --color-primary-ink: oklch(18% 0.02 246.8);       /* texto sobre el primario */
 
-  /* Superficie: NUNCA es el primario, aunque sea el fondo dominante. */
-  --surface-canvas: #101010;       /* Obsidian — fondo de página */
-  --surface-card: #171717;         /* Carbon — tarjetas, paneles elevados */
-  --surface-card-alt: #040126;     /* Deep Violet — borde de acción secundaria */
+  /* Superficie oscura (tema por defecto). Tintada hacia el hue del primario
+     en vez de negro puro: chroma bajo, casi imperceptible, pero saca la
+     interfaz del "negro de IA genérica". */
+  --surface-canvas: oklch(15% 0.012 250);
+  --surface-card: oklch(19.5% 0.014 250);
+  --surface-card-alt: oklch(23% 0.018 250);
+  --surface-raised: oklch(26% 0.02 250);
 
   /* Borde */
-  --border-hairline: #333333;      /* Slate — la mayoría de los bordes */
-  --border-strong: #3d3d3d;        /* Steel — borde sobre borde */
+  --border-hairline: oklch(32% 0.014 250);
+  --border-strong: oklch(40% 0.016 250);
 
   /* Texto */
-  --text-primary: #fdfdfd;         /* Paper — texto activo */
-  --text-muted: #6f6f6f;           /* Fog — texto secundario, no interactivo */
+  --text-primary: oklch(96% 0.006 250);
+  --text-muted: oklch(64% 0.012 250);
+  --text-faint: oklch(46% 0.012 250);
 
-  /* Estado (no vienen de Stryds, se agregan para el caso clínico).
-     Tres significados distintos, tres tokens distintos: no se reusa el mismo
-     badge para "dato sin confirmar en campo" y para "alerta clínica urgente",
-     son cosas diferentes y confundirlas es el tipo de error que el profesor
-     marca en revisión. */
-  --state-honesty-bg: #2a2200;      /* ámbar — "por confirmar en campo" */
-  --state-honesty-border: #a68a00;
-  --state-honesty-text: #e6c200;
+  /* Estado — tres significados, tres tonos, todos en OKLCH */
+  --state-honesty-bg: oklch(24% 0.05 80);
+  --state-honesty-border: oklch(55% 0.11 80);
+  --state-honesty-text: oklch(80% 0.13 85);
 
-  --state-critical-bg: #2a0d0d;     /* rojo — alerta clínica urgente */
-  --state-critical-border: #a63a3a;
-  --state-critical-text: #f28b8b;
+  --state-critical-bg: oklch(23% 0.055 25);
+  --state-critical-border: oklch(50% 0.13 25);
+  --state-critical-text: oklch(78% 0.11 20);
 
-  --state-pending-bg: #171717;      /* gris — pendiente regular, sin urgencia */
-  --state-pending-border: #6f6f6f;
-  --state-pending-text: #6f6f6f;
+  --state-pending-bg: oklch(23% 0.014 250);
+  --state-pending-border: oklch(45% 0.014 250);
+  --state-pending-text: oklch(66% 0.012 250);
 
   /* ============ TIPOGRAFÍA ============ */
   --font-display: 'SF Pro Display', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -55,39 +57,36 @@
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
-  /* Escala DOC — la página del taller, tamaño póster, hereda a Stryds tal cual */
-  --text-doc-caption: 14px;
+  /* Escala DOC — ratio >= 1.25 entre pasos, jerarquía real */
+  --text-doc-caption: 13px;
   --text-doc-body: 16px;
-  --text-doc-subheading: 21px;
-  --text-doc-heading-sm: 36px;
-  --text-doc-heading: 44px;
-  --text-doc-heading-lg: 78px;
-  --text-doc-display: 109px;
-  --text-doc-display-lg: 148px;
+  --text-doc-subheading: 20px;
+  --text-doc-heading-sm: 28px;
+  --text-doc-heading: 40px;
+  --text-doc-heading-lg: 64px;
+  --text-doc-display: 96px;
+  --text-doc-display-lg: 132px;
 
-  /* Escala PRODUCTO — las pantallas de la app dentro del documento, a 390px.
-     Mismos tokens de fuente y peso; la escala baja porque el "canvas" ya no es
-     una diapositiva sino una mano con guantes mirando un teléfono. */
+  /* Escala PRODUCTO — pantallas de la app a 390px */
   --text-app-caption: 12px;
   --text-app-body: 15px;
   --text-app-subheading: 17px;
   --text-app-heading-sm: 20px;
-  --text-app-heading: 24px;
-  --text-app-display: 32px;
+  --text-app-heading: 25px;
+  --text-app-display: 34px;
 
   /* ============ ESPACIO ============ */
   --space-unit: 4px;
 
-  /* DOC */
   --space-doc-16: 16px;
   --space-doc-20: 20px;
   --space-doc-32: 32px;
+  --space-doc-48: 48px;
   --space-doc-80: 80px;
   --space-doc-108: 108px;
 
-  /* PRODUCTO — de 80px de padding de tarjeta a 20px: la superficie es un
-     teléfono, no un póster. */
   --space-app-8: 8px;
   --space-app-12: 12px;
   --space-app-16: 16px;
@@ -95,27 +94,55 @@
   --space-app-24: 24px;
 
   /* ============ RADIO ============ */
-  --radius-pill: 100px;             /* botones — igual en doc y producto */
-  --radius-card-doc: 40px;          /* tarjetas del documento (Stryds original) */
-  --radius-card-app: 16px;          /* tarjetas dentro de las pantallas de la app */
-  --radius-sm: 10px;
+  --radius-pill: 100px;
+  --radius-card-doc: 28px;
+  --radius-card-app: 18px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
 
   /* ============ LAYOUT ============ */
-  --section-gap: 80px;
+  --section-gap: 88px;
   --nav-height-app: 64px;
+
+  /* ============ MOTION — ease-out exponencial, nunca rebote (salvo el
+     único caso declarado de feedback táctil en el prototipo, que usa un
+     overshoot mínimo y documentado). ============ */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-soft: cubic-bezier(0.22, 0.7, 0.24, 1);
+  --duration-fast: 150ms;
+  --duration-base: 260ms;
+  --duration-slow: 420ms;
 }
 
-/* Modo claro: el documento del taller se lee en clase con proyector,
-   así que se ofrece una alternativa clara sin tocar el primario ni los roles.
-   Los componentes de PRODUCTO (la app) se quedan en oscuro siempre: Stryds
-   es un sistema de salud nocturno por diseño ("late-night broadcast feel"),
-   y cambiar eso ahí rompe el caso, no el token. */
+/* Modo claro — toggle explícito en la UI, no prefers-color-scheme.
+   Mismos roles, mismo primario: solo cambia qué tono ocupa cada rol. */
 :root[data-theme="light"] {
-  --surface-canvas: #fdfdfd;
-  --surface-card: #f2f2f2;
-  --surface-card-alt: #e9e9e9;
-  --border-hairline: #d8d8d8;
-  --border-strong: #bdbdbd;
-  --text-primary: #101010;
-  --text-muted: #4a4a4a;
+  color-scheme: light;
+
+  --surface-canvas: oklch(98% 0.004 250);
+  --surface-card: oklch(100% 0 0);
+  --surface-card-alt: oklch(95% 0.006 250);
+  --surface-raised: oklch(100% 0 0);
+
+  --border-hairline: oklch(89% 0.006 250);
+  --border-strong: oklch(78% 0.01 250);
+
+  --text-primary: oklch(20% 0.012 250);
+  --text-muted: oklch(45% 0.014 250);
+  --text-faint: oklch(60% 0.012 250);
+
+  --color-primary-ink: oklch(14% 0.02 246.8);
+
+  --state-honesty-bg: oklch(95% 0.04 85);
+  --state-honesty-border: oklch(70% 0.1 80);
+  --state-honesty-text: oklch(38% 0.09 70);
+
+  --state-critical-bg: oklch(95% 0.035 25);
+  --state-critical-border: oklch(62% 0.13 25);
+  --state-critical-text: oklch(45% 0.14 20);
+
+  --state-pending-bg: oklch(94% 0.006 250);
+  --state-pending-border: oklch(75% 0.012 250);
+  --state-pending-text: oklch(48% 0.012 250);
 }
