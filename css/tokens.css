@@ -1,0 +1,121 @@
+/*
+ * Design tokens — sistema Stryds aplicado al caso de enfermería.
+ * Fuente: ../resources/variables.css y ../resources/tokens.json (sistema Stryds).
+ * Ningún color, tamaño, radio o espacio vive fuera de este archivo.
+ *
+ * Nomenclatura: patrón, luego color, luego peso (nunca al revés). Ej: bg-color-weight.
+ * Roles en vez de nombres de marca: el profesor dijo que el blanco y el negro
+ * "no hacen parte de colores primarios, punto". Por eso Obsidian/Carbon/Void
+ * se declaran como SUPERFICIE y el primario es Electric Lime.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* ============ COLOR — roles, no nombres de marca ============ */
+
+  /* Primario: el único color de acción. Sobre esto corre la prueba del profesor. */
+  --color-primary: #a6ff00;        /* Electric Lime — botones, nav activa, foco */
+  --color-primary-ink: #101010;    /* texto sobre el primario (Obsidian) */
+
+  /* Superficie: NUNCA es el primario, aunque sea el fondo dominante. */
+  --surface-canvas: #101010;       /* Obsidian — fondo de página */
+  --surface-card: #171717;         /* Carbon — tarjetas, paneles elevados */
+  --surface-card-alt: #040126;     /* Deep Violet — borde de acción secundaria */
+
+  /* Borde */
+  --border-hairline: #333333;      /* Slate — la mayoría de los bordes */
+  --border-strong: #3d3d3d;        /* Steel — borde sobre borde */
+
+  /* Texto */
+  --text-primary: #fdfdfd;         /* Paper — texto activo */
+  --text-muted: #6f6f6f;           /* Fog — texto secundario, no interactivo */
+
+  /* Estado (no vienen de Stryds, se agregan para el caso clínico).
+     Tres significados distintos, tres tokens distintos: no se reusa el mismo
+     badge para "dato sin confirmar en campo" y para "alerta clínica urgente",
+     son cosas diferentes y confundirlas es el tipo de error que el profesor
+     marca en revisión. */
+  --state-honesty-bg: #2a2200;      /* ámbar — "por confirmar en campo" */
+  --state-honesty-border: #a68a00;
+  --state-honesty-text: #e6c200;
+
+  --state-critical-bg: #2a0d0d;     /* rojo — alerta clínica urgente */
+  --state-critical-border: #a63a3a;
+  --state-critical-text: #f28b8b;
+
+  --state-pending-bg: #171717;      /* gris — pendiente regular, sin urgencia */
+  --state-pending-border: #6f6f6f;
+  --state-pending-text: #6f6f6f;
+
+  /* ============ TIPOGRAFÍA ============ */
+  --font-display: 'SF Pro Display', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: 'Arial', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* Escala DOC — la página del taller, tamaño póster, hereda a Stryds tal cual */
+  --text-doc-caption: 14px;
+  --text-doc-body: 16px;
+  --text-doc-subheading: 21px;
+  --text-doc-heading-sm: 36px;
+  --text-doc-heading: 44px;
+  --text-doc-heading-lg: 78px;
+  --text-doc-display: 109px;
+  --text-doc-display-lg: 148px;
+
+  /* Escala PRODUCTO — las pantallas de la app dentro del documento, a 390px.
+     Mismos tokens de fuente y peso; la escala baja porque el "canvas" ya no es
+     una diapositiva sino una mano con guantes mirando un teléfono. */
+  --text-app-caption: 12px;
+  --text-app-body: 15px;
+  --text-app-subheading: 17px;
+  --text-app-heading-sm: 20px;
+  --text-app-heading: 24px;
+  --text-app-display: 32px;
+
+  /* ============ ESPACIO ============ */
+  --space-unit: 4px;
+
+  /* DOC */
+  --space-doc-16: 16px;
+  --space-doc-20: 20px;
+  --space-doc-32: 32px;
+  --space-doc-80: 80px;
+  --space-doc-108: 108px;
+
+  /* PRODUCTO — de 80px de padding de tarjeta a 20px: la superficie es un
+     teléfono, no un póster. */
+  --space-app-8: 8px;
+  --space-app-12: 12px;
+  --space-app-16: 16px;
+  --space-app-20: 20px;
+  --space-app-24: 24px;
+
+  /* ============ RADIO ============ */
+  --radius-pill: 100px;             /* botones — igual en doc y producto */
+  --radius-card-doc: 40px;          /* tarjetas del documento (Stryds original) */
+  --radius-card-app: 16px;          /* tarjetas dentro de las pantallas de la app */
+  --radius-sm: 10px;
+
+  /* ============ LAYOUT ============ */
+  --section-gap: 80px;
+  --nav-height-app: 64px;
+}
+
+/* Modo claro: el documento del taller se lee en clase con proyector,
+   así que se ofrece una alternativa clara sin tocar el primario ni los roles.
+   Los componentes de PRODUCTO (la app) se quedan en oscuro siempre: Stryds
+   es un sistema de salud nocturno por diseño ("late-night broadcast feel"),
+   y cambiar eso ahí rompe el caso, no el token. */
+:root[data-theme="light"] {
+  --surface-canvas: #fdfdfd;
+  --surface-card: #f2f2f2;
+  --surface-card-alt: #e9e9e9;
+  --border-hairline: #d8d8d8;
+  --border-strong: #bdbdbd;
+  --text-primary: #101010;
+  --text-muted: #4a4a4a;
+}

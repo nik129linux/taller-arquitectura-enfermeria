@@ -1,0 +1,62 @@
+/*
+ * Átomo: Botón (.btn-primary, .btn-secondary)
+ * Define las acciones interactivas primarias y secundarias.
+ * Sigue el sistema Stryds con bordes redondeados completos (--radius-pill).
+ */
+
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-app-8);
+  font-family: var(--font-body);
+  font-size: var(--text-doc-caption);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  padding: var(--space-app-12) var(--space-doc-20);
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.btn-primary:active,
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Primario: Electric Lime sólido para la acción crítica */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-ink);
+  border: 1px solid var(--color-primary);
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+/* Secundario: Contorno tenue para acciones auxiliares sin competir con el primario */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}

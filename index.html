@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taller de Arquitectura de Información y Sistema de Diseño | Stryds Nursing</title>
+  
+  <!-- Carga estricta de tokens y componentes atómicos modulares -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/atoms/button.css">
+  <link rel="stylesheet" href="css/atoms/input.css">
+  <link rel="stylesheet" href="css/atoms/badge.css">
+  <link rel="stylesheet" href="css/atoms/avatar.css">
+  <link rel="stylesheet" href="css/atoms/label.css">
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+
+  <!-- Barra de navegación fija superior con vínculos de anclaje -->
+  <header class="doc-header-nav">
+    <div class="doc-nav-container">
+      <a href="#hero" class="doc-brand">
+        <span>Stryds</span>
+        <span class="doc-brand-accent">/ Clínico</span>
+      </a>
+      <nav aria-label="Navegación del documento">
+        <ul class="doc-nav-list">
+          <li><a href="#section-content" class="doc-nav-link">1. Contenido</a></li>
+          <li><a href="#section-hierarchy" class="doc-nav-link">2. Jerarquía</a></li>
+          <li><a href="#section-navigation" class="doc-nav-link">3. Navegación</a></li>
+          <li><a href="#section-design-system" class="doc-nav-link">4. Sistema de diseño</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="doc-main">
+
+    <!-- Encabezado de presentación del caso de estudio -->
+    <header id="hero" class="doc-hero">
+      <p class="doc-hero-tagline">Taller Universitario de Diseño de Interfaces · Caso Mobile</p>
+      <h1 class="doc-hero-title">Arquitectura de Información para una App de Enfermería Hospitalaria</h1>
+      <p class="doc-hero-lead">
+        Una interfaz móvil con tres lectores diferenciados: el personal de enfermería, el paciente y su familia.
+        Diseñada bajo el sistema visual Stryds con alto contraste y optimización para lectura en camas hospitalarias.
+      </p>
+    </header>
+
+    <!-- ==================== SECCIÓN 1: CONTENIDO ==================== -->
+    <section id="section-content" class="doc-section">
+      <h2 class="section-heading">1. Contenido</h2>
+
+      <article class="doc-card">
+        <h3 class="subsection-heading">Por qué tres lectores, no dos</h3>
+        <p class="doc-text-block">
+          La aplicación registra y comunica el flujo continuo de un turno de hospital. El <strong>enfermero</strong> necesita rapidez, densidad y precisión clínica inmediata mientras está de pie y con guantes. El <strong>paciente</strong> necesita saber qué procedimiento sigue, en lenguaje llano que mitigue su incertidumbre. La <strong>familia</strong> necesita logística operativa (cuándo puede ingresar, a quién dirigirse para consultas), no el dato fisiológico crudo: recibe menos detalle médico que el paciente, pero más contexto de coordinación horaria.
+        </p>
+      </article>
+
+      <div class="doc-card">
+        <h3 class="subsection-heading">Inventario de entidades</h3>
+        <p class="doc-text-muted">Desglose de datos maestros y permisos de visibilidad según el rol que consulta.</p>
+        
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col">Entidad</th>
+                <th scope="col">Campos</th>
+                <th scope="col">Enfermero ve</th>
+                <th scope="col">Paciente ve</th>
+                <th scope="col">Familia ve</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Paciente</td>
+                <td>nombre, habitación, cama, diagnóstico, alergias</td>
+                <td>Todo</td>
+                <td>Su nombre, su habitación</td>
+                <td>Nombre y habitación</td>
+              </tr>
+              <tr>
+                <td>Turno</td>
+                <td>enfermero asignado, horario, próxima ronda</td>
+                <td>Todo</td>
+                <td>"Tu enfermera es X, vuelve a las 3pm"</td>
+                <td>Igual que paciente</td>
+              </tr>
+              <tr>
+                <td>Evento de cuidado</td>
+                <td>tipo, valor clínico, hora, vía, dosis, nota interna</td>
+                <td>Todo, crudo</td>
+                <td>Traducción a frase llana</td>
+                <td>Resumen de si se cumplió, sin valores</td>
+              </tr>
+              <tr>
+                <td>Pendiente</td>
+                <td>qué falta, para cuándo, prioridad</td>
+                <td>Lista completa ordenada por urgencia</td>
+                <td>"Esto viene después" sin jerga</td>
+                <td>No se muestra (ruido innecesario)</td>
+              </tr>
+              <tr>
+                <td>Mensaje al paciente</td>
+                <td>texto generado a partir del evento</td>
+                <td>Ve el evento origen</td>
+                <td>Ve el mensaje</td>
+                <td>No aplica</td>
+              </tr>
+              <tr>
+                <td>Alerta clínica</td>
+                <td>valor fuera de rango, protocolo a seguir</td>
+                <td>Completa, con protocolo</td>
+                <td>NO se muestra cruda</td>
+                <td>NO se muestra</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="doc-card">
+        <h3 class="subsection-heading">Traducción de un mismo evento — El argumento del caso</h3>
+        <p class="doc-text-muted">Demostración de cómo la misma verdad clínica se adapta semánticamente a cada modelo mental.</p>
+        
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col">Evento real</th>
+                <th scope="col">Registro del enfermero (crudo)</th>
+                <th scope="col">Lo que ve el paciente</th>
+                <th scope="col">Lo que ve la familia</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Medicación aplicada</td>
+                <td>Enoxaparina 40mg SC, 11:05, vía abdominal</td>
+                <td>Ya le pusieron el medicamento de la mañana</td>
+                <td>Tratamiento de la mañana cumplido</td>
+              </tr>
+              <tr>
+                <td>Signos vitales fuera de rango</td>
+                <td>PA 90/55, taquicardia 112, alerta protocolo hipotensión</td>
+                <td>(No se muestra hasta que el profesional decida comunicarlo)</td>
+                <td>(No se muestra)</td>
+              </tr>
+              <tr>
+                <td>Cambio de posición</td>
+                <td>Cambio postural decúbito lateral izq., 11:20</td>
+                <td>Le ayudaron a cambiar de posición</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Próxima ronda</td>
+                <td>Ronda programada 13:00, control de signos</td>
+                <td>El enfermero vuelve a la 1pm</td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="doc-card">
+        <h3 class="subsection-heading">Qué NO se muestra nunca, por lector</h3>
+        <ul class="tree-list">
+          <li>
+            <strong class="tree-node-title">Paciente:</strong>
+            <span class="tree-node-desc">Valores clínicos crudos fuera de rango, sospechas diagnósticas preliminares, notas confidenciales de enfermería y nombres farmacológicos técnicos sin contextualizar.</span>
+          </li>
+          <li>
+            <strong class="tree-node-title">Familia:</strong>
+            <span class="tree-node-desc">Todo lo anterior, sumado a detalles íntimos del procedimiento (dosificaciones, accesos venosos específicos y horarios exactos de higiene asistida).</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="doc-card">
+        <h3 class="subsection-heading">Honestidad de datos</h3>
+        <p class="doc-text-block">
+          Las entrevistas presenciales con enfermeros de turno y familiares continúan en fase de agendamiento.
+          Por tanto, los flujos y parámetros no consolidados se marcan explícitamente como
+          <span class="badge-honesty">POR CONFIRMAR EN CAMPO</span>.
+          Esto aplica al catálogo exhaustivo de eventos de cuidado, las ventanas de traducción en tiempo real y la política de visualización libre del paciente frente al dispositivo.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== SECCIÓN 2: JERARQUÍA ==================== -->
+    <section id="section-hierarchy" class="doc-section">
+      <h2 class="section-heading">2. Jerarquía</h2>
+
+      <div class="doc-card">
+        <p class="doc-text-muted">Estructura arbórea de navegación y priorización cognitiva adaptada a los objetivos de cada rol.</p>
+        
+        <!-- Árbol 1: Enfermero -->
+        <details class="hierarchy-details" open>
+          <summary class="hierarchy-summary">Árbol Enfermero (Criterio: Urgencia y Tiempo)</summary>
+          <div class="hierarchy-content">
+            <ul class="tree-list">
+              <li>
+                <span class="tree-node-title">Turno</span>
+                <ul>
+                  <li>
+                    <span class="tree-node-title">Mi lista de pacientes</span>
+                    <ul>
+                      <li>
+                        <span class="tree-node-title">Paciente</span>
+                        <ul>
+                          <li><span class="tree-node-title">Pendientes ahora</span> <span class="tree-node-desc">(ordenados por hora límite)</span></li>
+                          <li><span class="tree-node-title">Alertas activas</span> <span class="tree-node-desc">(valores fuera de rango)</span></li>
+                          <li><span class="tree-node-title">Historial del turno</span> <span class="tree-node-desc">(colapsado por defecto)</span></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <span class="tree-node-title">Registrar evento</span>
+                    <ul>
+                      <li><span class="tree-node-title">Evento previsto</span> <span class="tree-node-desc">(del plan de cuidado — 1 toque)</span></li>
+                      <li><span class="tree-node-title">Evento fuera de lo esperado</span> <span class="tree-node-desc">(requiere abrir detalle)</span></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Árbol 2: Paciente -->
+        <details class="hierarchy-details" open>
+          <summary class="hierarchy-summary">Árbol Paciente (Criterio: Reducción de Ansiedad "¿Cuánto falta?")</summary>
+          <div class="hierarchy-content">
+            <ul class="tree-list">
+              <li>
+                <span class="tree-node-title">Mi estado</span>
+                <ul>
+                  <li><span class="tree-node-title">Qué sigue</span> <span class="tree-node-desc">(próximo evento previsto con hora aproximada)</span></li>
+                  <li><span class="tree-node-title">Qué pasó hoy</span> <span class="tree-node-desc">(línea de tiempo narrativa en lenguaje llano)</span></li>
+                  <li><span class="tree-node-title">Preguntas frecuentes / Cómo llamar al enfermero</span></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Árbol 3: Familia -->
+        <details class="hierarchy-details" open>
+          <summary class="hierarchy-summary">Árbol Familia (Criterio: Logística y Acompañamiento)</summary>
+          <div class="hierarchy-content">
+            <ul class="tree-list">
+              <li>
+                <span class="tree-node-title">Qué está pasando</span> <span class="tree-node-desc">(resumen de una línea, sin clínica cruda)</span>
+                <ul>
+                  <li><span class="tree-node-title">Cuándo puedo verlo</span> <span class="tree-node-desc">(horario de visita y pautas)</span></li>
+                  <li><span class="tree-node-title">A quién pregunto</span> <span class="tree-node-desc">(contacto directo con el enfermero asignado)</span></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="doc-card">
+        <h3 class="subsection-heading">Restricción transversal: pantalla semi-pública</h3>
+        <p class="doc-text-block">
+          En el entorno hospitalario, la pantalla del enfermero es visible inevitablemente para el paciente recostado en la cama durante la atención directa. Por esta razón crítica de privacidad y contención emocional, el <strong>Historial del turno</strong> y cualquier valor cuantitativo crudo requieren <strong>un toque deliberado</strong> para desplegarse, impidiendo que datos alarmantes o notas clínicas queden expuestos al primer vistazo. Este paso adicional es una decisión de arquitectura deliberada.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== SECCIÓN 3: NAVEGACIÓN ==================== -->
+    <section id="section-navigation" class="doc-section">
+      <h2 class="section-heading">3. Navegación</h2>
+
+      <div class="role-preview-card">
+        <h3 class="subsection-heading">Selector interactivo de rol</h3>
+        <p class="doc-text-muted">
+          Seleccioná un rol para visualizar la maqueta de navegación inferior persistente correspondiente (64px de alto).
+        </p>
+
+        <!-- Botones selectores de rol -->
+        <div class="role-switch-bar" role="group" aria-label="Seleccionar vista por rol">
+          <button type="button" class="role-switch-btn" data-role="enfermero" aria-pressed="true">
+            Enfermero
+          </button>
+          <button type="button" class="role-switch-btn" data-role="paciente" aria-pressed="false">
+            Paciente
+          </button>
+          <button type="button" class="role-switch-btn" data-role="familia" aria-pressed="false">
+            Familia
+          </button>
+        </div>
+
+        <!-- Maqueta Enfermero -->
+        <div class="role-view-panel is-active" data-role="enfermero">
+          <p class="label-caption">Destinos globales del personal clínico (3 pestañas):</p>
+          <div class="app-nav-bar" role="navigation" aria-label="Navegación Enfermero">
+            <button type="button" class="app-nav-item is-active" aria-pressed="true">
+              <span class="app-nav-icon">📋</span>
+              <span>Turno</span>
+            </button>
+            <button type="button" class="app-nav-item" aria-pressed="false">
+              <span class="app-nav-icon">➕</span>
+              <span>Registrar</span>
+            </button>
+            <button type="button" class="app-nav-item" aria-pressed="false">
+              <span class="app-nav-icon">⏳</span>
+              <span>Pendientes</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Maqueta Paciente -->
+        <div class="role-view-panel" data-role="paciente">
+          <p class="label-caption">Destinos globales del paciente internado (2 pestañas):</p>
+          <div class="app-nav-bar" role="navigation" aria-label="Navegación Paciente">
+            <button type="button" class="app-nav-item is-active" aria-pressed="true">
+              <span class="app-nav-icon">🩺</span>
+              <span>Mi estado</span>
+            </button>
+            <button type="button" class="app-nav-item" aria-pressed="false">
+              <span class="app-nav-icon">❓</span>
+              <span>Preguntas</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Maqueta Familia -->
+        <div class="role-view-panel" data-role="familia">
+          <p class="label-caption">Destinos globales de familiares y acompañantes (2 pestañas):</p>
+          <div class="app-nav-bar" role="navigation" aria-label="Navegación Familia">
+            <button type="button" class="app-nav-item is-active" aria-pressed="true">
+              <span class="app-nav-icon">💬</span>
+              <span>Qué pasa</span>
+            </button>
+            <button type="button" class="app-nav-item" aria-pressed="false">
+              <span class="app-nav-icon">📞</span>
+              <span>Contacto</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-card">
+        <h3 class="subsection-heading">Navegación contextual (hipervínculos a detalle)</h3>
+        <ul class="tree-list">
+          <li>
+            <strong class="tree-node-title">Paciente en la lista:</strong>
+            <span class="tree-node-desc">Conduce al perfil clínico completo con alertas y evolución médica.</span>
+          </li>
+          <li>
+            <strong class="tree-node-title">Elemento pendiente:</strong>
+            <span class="tree-node-desc">Acción directa de 1 toque para confirmar administración y cerrar la tarea.</span>
+          </li>
+          <li>
+            <strong class="tree-node-title">Ver más en el timeline:</strong>
+            <span class="tree-node-desc">Abre explicaciones claras del procedimiento en lenguaje cotidiano.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="doc-card">
+        <h3 class="subsection-heading">La tensión de diseño, declarada</h3>
+        <p class="doc-text-block">
+          Existe un conflicto intrínseco entre la exigencia de registrar una tarea en menos de tres segundos de pie y la necesidad de resguardar datos sensibles ante miradas ajenas.
+        </p>
+        <ul class="tree-list">
+          <li>
+            <strong class="tree-node-title">Eventos previstos:</strong>
+            <span class="tree-node-desc">Confirmación inmediata en 1 toque sin exponer detalles confidenciales en la pantalla principal.</span>
+          </li>
+          <li>
+            <strong class="tree-node-title">Eventos no previstos:</strong>
+            <span class="tree-node-desc">Apertura obligatoria de ficha detallada para asentar observaciones clínicas complejas de forma protegida.</span>
+          </li>
+        </ul>
+        <p class="doc-text-block">
+          Hipótesis de diseño clasificada como <span class="badge-honesty">POR CONFIRMAR EN CAMPO</span>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== SECCIÓN 4: SISTEMA DE DISEÑO ==================== -->
+    <section id="section-design-system" class="doc-section">
+      <h2 class="section-heading">4. Sistema de diseño</h2>
+
+      <!-- a) Design tokens -->
+      <h3 class="subsection-heading">Design tokens</h3>
+      <p class="doc-text-muted">
+        Tokens extraídos e inspeccionados dinámicamente desde <code>tokens.css</code>.
+      </p>
+      <div id="tokens-grid" class="tokens-grid">
+        <!-- Renderizado dinámico vía app.js -->
+      </div>
+
+      <!-- b) Control de cambio de color primario -->
+      <div class="color-picker-banner">
+        <div class="color-picker-control">
+          <label for="color-primary-input" class="color-picker-label">Cambiá el color primario</label>
+          <input type="color" id="color-primary-input" class="input-color" aria-label="Selector de color primario">
+        </div>
+        <p class="color-picker-note">
+          El primario es Electric Lime, no el negro de fondo. Los tonos oscuros son superficie (--surface-*), nunca --color-primary.
+        </p>
+      </div>
+
+      <!-- c) Átomos -->
+      <h3 class="subsection-heading">Átomos</h3>
+      <div class="atoms-showcase">
+        <div class="atom-item">
+          <span class="label-caption">Botón primario (.btn-primary)</span>
+          <button type="button" class="btn-primary">Confirmar dosis</button>
+        </div>
+
+        <div class="atom-item">
+          <span class="label-caption">Botón secundario (.btn-secondary)</span>
+          <button type="button" class="btn-secondary">Ver historial</button>
+        </div>
+
+        <div class="atom-item">
+          <span class="label-caption">Input de texto (.input-text)</span>
+          <input type="text" class="input-text" placeholder="Buscar paciente o cama..." style="max-width: 220px;">
+        </div>
+
+        <div class="atom-item">
+          <span class="label-caption">Badge honestidad (.badge-honesty)</span>
+          <span class="badge-honesty">POR CONFIRMAR EN CAMPO</span>
+        </div>
+
+        <div class="atom-item">
+          <span class="label-caption">Badge crítico (.badge-critical)</span>
+          <span class="badge-critical">PA 90/55</span>
+        </div>
+
+        <div class="atom-item">
+          <span class="label-caption">Badge pendiente (.badge-pending)</span>
+          <span class="badge-pending">Pendiente 12:00</span>
+        </div>
+
+        <div class="atom-item">
+          <span class="label-caption">Avatar circular (.avatar)</span>
+          <div class="avatar">CR</div>
+        </div>
+
+        <div class="atom-item">
+          <span class="label-caption">Etiqueta (.label-caption)</span>
+          <span class="label-caption">Habitación 304-B</span>
+        </div>
+      </div>
+
+      <!-- d) Moléculas -->
+      <h3 class="subsection-heading">Moléculas</h3>
+      <div class="doc-card" style="align-items: flex-start;">
+        <span class="label-caption">Tarjeta de paciente construida combinando los átomos anteriores:</span>
+        <article class="patient-card">
+          <div class="patient-card-info">
+            <div class="avatar">CR</div>
+            <div class="patient-card-text">
+              <h4 class="patient-card-name">Carlos Rodríguez</h4>
+              <span class="patient-card-meta">Hab. 304 · Cama A</span>
+            </div>
+          </div>
+          <span class="badge-critical">Atención PA</span>
+        </article>
+      </div>
+
+      <!-- e) Organismos -->
+      <h3 class="subsection-heading">Organismos</h3>
+      <div class="doc-card" style="gap: var(--space-doc-32);">
+        <div>
+          <h4 class="label-caption" style="margin-bottom: var(--space-app-12);">1. Barra de navegación global</h4>
+          <div class="app-nav-bar" role="navigation" aria-label="Organismo Nav">
+            <button type="button" class="app-nav-item is-active" aria-pressed="true">
+              <span class="app-nav-icon">📋</span>
+              <span>Turno</span>
+            </button>
+            <button type="button" class="app-nav-item" aria-pressed="false">
+              <span class="app-nav-icon">➕</span>
+              <span>Registrar</span>
+            </button>
+            <button type="button" class="app-nav-item" aria-pressed="false">
+              <span class="app-nav-icon">⏳</span>
+              <span>Pendientes</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="label-caption" style="margin-bottom: var(--space-app-12);">2. Lista de turno (apilamiento de tarjetas)</h4>
+          <div class="shift-list">
+            <article class="patient-card">
+              <div class="patient-card-info">
+                <div class="avatar">CR</div>
+                <div class="patient-card-text">
+                  <h5 class="patient-card-name">Carlos Rodríguez</h5>
+                  <span class="patient-card-meta">Hab. 304-A · Postoperatorio</span>
+                </div>
+              </div>
+              <span class="badge-critical">Alerta 90/55</span>
+            </article>
+
+            <article class="patient-card">
+              <div class="patient-card-info">
+                <div class="avatar">MG</div>
+                <div class="patient-card-text">
+                  <h5 class="patient-card-name">María González</h5>
+                  <span class="patient-card-meta">Hab. 304-B · Enoxaparina 40mg</span>
+                </div>
+              </div>
+              <span class="badge-pending">11:00 Pendiente</span>
+            </article>
+
+            <article class="patient-card">
+              <div class="patient-card-info">
+                <div class="avatar">JP</div>
+                <div class="patient-card-text">
+                  <h5 class="patient-card-name">Jorge Pérez</h5>
+                  <span class="patient-card-meta">Hab. 305-A · Control de signos</span>
+                </div>
+              </div>
+              <button type="button" class="btn-primary" style="padding: var(--space-unit) var(--space-app-12); font-size: var(--text-app-caption);">Aplicar</button>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- f) Templates / views -->
+      <h3 class="subsection-heading">Templates / views</h3>
+      <div class="phone-frame-container">
+        <!-- Frame de teléfono simulado a 390px -->
+        <div class="phone-frame" role="region" aria-label="Maqueta de pantalla móvil 390px">
+          <div class="phone-status-bar">
+            <span>09:41</span>
+            <span>5G 100%</span>
+          </div>
+
+          <header class="phone-app-header">
+            <div>
+              <span class="label-caption">Hospital Central · Piso 3</span>
+              <h4 class="phone-header-title">Mi Turno</h4>
+            </div>
+            <div class="avatar avatar-sm">EN</div>
+          </header>
+
+          <div class="phone-screen-content">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="label-caption-strong">Pacientes asignados (3)</span>
+              <span class="badge-critical">1 Crítico</span>
+            </div>
+
+            <div class="shift-list">
+              <article class="patient-card">
+                <div class="patient-card-info">
+                  <div class="avatar">CR</div>
+                  <div class="patient-card-text">
+                    <h5 class="patient-card-name">Carlos Rodríguez</h5>
+                    <span class="patient-card-meta">Hab. 304-A</span>
+                  </div>
+                </div>
+                <span class="badge-critical">PA 90/55</span>
+              </article>
+
+              <article class="patient-card">
+                <div class="patient-card-info">
+                  <div class="avatar">MG</div>
+                  <div class="patient-card-text">
+                    <h5 class="patient-card-name">María González</h5>
+                    <span class="patient-card-meta">Hab. 304-B</span>
+                  </div>
+                </div>
+                <span class="badge-pending">Medicación 11h</span>
+              </article>
+
+              <article class="patient-card">
+                <div class="patient-card-info">
+                  <div class="avatar">JP</div>
+                  <div class="patient-card-text">
+                    <h5 class="patient-card-name">Jorge Pérez</h5>
+                    <span class="patient-card-meta">Hab. 305-A</span>
+                  </div>
+                </div>
+                <button type="button" class="btn-primary" style="padding: var(--space-unit) var(--space-app-12); font-size: var(--text-app-caption);">1 toque</button>
+              </article>
+            </div>
+          </div>
+
+          <div class="phone-bottom-nav">
+            <button type="button" class="app-nav-item is-active" aria-pressed="true">
+              <span class="app-nav-icon">📋</span>
+              <span>Turno</span>
+            </button>
+            <button type="button" class="app-nav-item" aria-pressed="false">
+              <span class="app-nav-icon">➕</span>
+              <span>Registrar</span>
+            </button>
+            <button type="button" class="app-nav-item" aria-pressed="false">
+              <span class="app-nav-icon">⏳</span>
+              <span>Pendientes</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="doc-footer">
+    <p>Taller de Diseño de Interfaces · Caso Mobile de Enfermería · Sistema de Diseño Stryds</p>
+  </footer>
+
+</body>
+</html>

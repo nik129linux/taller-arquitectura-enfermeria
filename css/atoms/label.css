@@ -1,0 +1,18 @@
+/*
+ * Átomo: Label / Caption (.label-caption)
+ * Etiquetas textuales complementarias y metadatos de baja prominencia.
+ */
+
+.label-caption {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: var(--text-doc-caption);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.label-caption-strong {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}

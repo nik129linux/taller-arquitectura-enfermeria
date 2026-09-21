@@ -1,0 +1,43 @@
+/*
+ * Átomo: Badge de estado (.badge-pending, .badge-honesty, .badge-critical)
+ * Tres significados, tres clases: honestidad de datos (ámbar), alerta clínica
+ * urgente (rojo) y pendiente regular (gris) no son la misma cosa y no
+ * comparten badge aunque los tres sean "una etiqueta redonda".
+ */
+
+.badge-pending,
+.badge-honesty,
+.badge-critical {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-unit);
+  font-family: var(--font-body);
+  font-size: var(--text-app-caption);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  padding: var(--space-unit) var(--space-app-12);
+  border-radius: var(--radius-pill);
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+/* Dato sin confirmar en campo (ámbar) — honestidad, no urgencia clínica */
+.badge-honesty {
+  background-color: var(--state-honesty-bg);
+  border: 1px solid var(--state-honesty-border);
+  color: var(--state-honesty-text);
+}
+
+/* Alerta clínica urgente (rojo) — un valor fuera de rango real */
+.badge-critical {
+  background-color: var(--state-critical-bg);
+  border: 1px solid var(--state-critical-border);
+  color: var(--state-critical-text);
+}
+
+/* Pendiente regular, sin urgencia (gris / neutral) */
+.badge-pending {
+  background-color: var(--state-pending-bg);
+  border: 1px solid var(--state-pending-border);
+  color: var(--state-pending-text);
+}

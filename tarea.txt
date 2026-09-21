@@ -1,0 +1,53 @@
+TALLER ARQUITECTURA DE INFORMACIÓN + SISTEMA DE DISEÑO — DISEÑO DE INTERFACES SOFTWARE
+App de enfermería (caso mobile del proyecto final)
+
+Ventana de disponibilidad: 11:00 - 13:00 (2026-09-21)
+
+ENCARGO (dictado en clase, 2026-09-21, transcripts/2026-09-21_1040.md min 14:56-17:30)
+  Seleccionar UNO de los casos de estudio del proyecto final (escritorio, mobile o
+  smartwatch, el portafolio queda fuera) y aplicarle arquitectura de información en
+  cuatro pasos, EN ESTE ORDEN:
+
+    1. Contenido
+    2. Jerarquía
+    3. Navegación
+    4. Sistema de diseño
+
+  "ojo, lo que le digo: contenido, jerarquía, navegación, design. Tiene que pasar por
+   esos pasos."
+
+  Formato libre: md, word, pdf, presentación, infografía, "lo que usted quiera".
+
+REQUISITOS
+  1. Contenido: qué información maneja la aplicación, con su inventario.
+  2. Jerarquía: cómo se organiza esa información dentro de la app.
+  3. Navegación: distinguir navegación GLOBAL (persiste la selección activa, ej. un
+     menú de dashboard) de navegación CONTEXTUAL (un hipervínculo "ver más" que sí
+     debe llevar a más detalle real).
+  4. Sistema de diseño en Atomic Design: átomos -> moléculas -> organismos ->
+     templates/páginas -> pantallas. Un átomo = un archivo aparte.
+  5. Design tokens con nomenclatura técnica: patrón, color, peso (bg-color-weight),
+     nunca al revés.
+  6. Archivo de configuración de colores central. El profesor va a cambiar el color
+     primario y revisar que se propague a TODA la interfaz sin que quede nada del
+     color viejo.
+  7. Color primario distinto de blanco y de negro.
+
+CASO ELEGIDO: MOBILE — APP DE ENFERMERÍA
+  Fuente: courses/interfaces/tareas/proyecto final/ideas.md, líneas 18-35.
+
+  Una sola app con tres lectores: el enfermero (registra sin salir de la habitación,
+  de pie, con guantes, con una mano ocupada), el paciente (ve qué le van a hacer, en
+  palabras que entienda) y la familia (ve estado y logística, no lo clínico crudo).
+
+  El desafío de interfaz no es el formulario: es qué ve cada lector y qué no. La
+  pantalla del enfermero es semi-pública porque el paciente la lee desde la cama.
+
+RESTRICCIONES
+  Vanilla HTML/CSS/JS, sin build tools, sin frameworks.
+  Un solo index.html + css/ + js/.
+  Sistema de diseño aplicado: Stryds (tareas/resources/), con el primario y las
+  superficies renombrados por rol en css/tokens.css.
+
+ENTREGA
+  Repositorio de GitHub PÚBLICO + deploy en Vercel.
